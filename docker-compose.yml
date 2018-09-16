@@ -1,5 +1,11 @@
 version: '2.1'
 services:
+  app:
+    image: fcollman/annotationinfo
+    links:
+      - db
+    ports:
+      - 80:80
   db:
     image: mdillon/postgis
     environment:
