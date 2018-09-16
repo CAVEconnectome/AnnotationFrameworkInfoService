@@ -1,0 +1,19 @@
+<!doctype html>
+<title>{% block title %}{% endblock %} - AnnotationFrameworkInfoService</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<nav>
+  <ul><li>
+     <a href="{{url_for('datasets.index')}}">AnnotationFrameworkInfoService</a>
+  </li>
+
+    <li>
+          <a href="{{url_for('datasets.index')}}">Datasets</a>    
+    </li>
+  </ul>
+</nav>
+<section class="content">
+  <header>
+    {% block header %}{% endblock %}
+  </header>
+  {% block content %}{% endblock %}
+</section>

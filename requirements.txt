@@ -1,0 +1,13 @@
+marshmallow==3.0.0b11
+numpy
+pandas
+Flask
+sqlalchemy
+flask-sqlalchemy
+marshmallow-sqlalchemy
+flask-marshmallow
+flask-admin
+Flask-Migrate
+psycopg2-binary
+geoalchemy2
+flask-wtf

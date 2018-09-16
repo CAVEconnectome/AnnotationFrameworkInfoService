@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Dataset:{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{{dataset.name}}
+
+{% endblock %}
