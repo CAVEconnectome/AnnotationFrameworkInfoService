@@ -3,7 +3,7 @@
 ## Getting started
 Install docker.
 
-Edit annotationinfoservice/instance/config.cfg to include your deployment specific secret keys and neuroglancer server
+Edit annotationinfoservice/instance/config.cfg (see config.cfg.example) to include your deployment specific secret keys and neuroglancer server
 
 ```
   # spin up a postgres database on your localhost
