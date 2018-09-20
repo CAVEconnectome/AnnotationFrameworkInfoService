@@ -16,4 +16,4 @@ class DataSet(NamedModel, Base):
     flat_segmentation_source = Column(String(200), nullable=True)
     pychunkgraph_segmentation_source = Column(String(200), nullable=True)
     pychunkgraph_endpoint = Column(String(200), nullable=True)
-    
+    annotation_engine_endpoint = Column(String(200), nullable=True)
