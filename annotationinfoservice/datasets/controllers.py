@@ -17,8 +17,8 @@ def index():
 def dataset_view(datasetname):
     dataset = DataSet.query.filter(DataSet.name == datasetname).first_or_404()
     state = neuroglancer.ViewerState()
-    state.layers['img'] = neuroglancer.ImageLayer(source=dataset.image_source)
-    state.layers['seg'] = neuroglancer.SegmentationLayer(source=dataset.flat_segmentation_source)
+    state.layers['img'] = neuroglancer.ImageLayer(source='precomputed://'+dataset.image_source)
+    state.layers['seg'] = neuroglancer.SegmentationLayer(source='precomputed://'+dataset.flat_segmentation_source)
     state.layers['ann'] = neuroglancer.AnnotationLayer()
     state.layout = "xy-3d"
     ng_url = neuroglancer.to_url(state,
