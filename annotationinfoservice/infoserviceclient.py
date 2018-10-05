@@ -6,7 +6,7 @@ class InfoServiceClient(object):
     def __init__(self, endpoint=None, dataset_name=None):
         if endpoint is None:
             #CHECK IF THIS IS THE RIGHT ENVIRONMENT VARIABLE NAME
-            self.endpoint = os.environ.get('INFO_SERVICE_ENDPOINT')
+            self.endpoint = os.environ.get('ANNOTATIONINFOSERVICE_ENDPOINT')
         else:
             self.endpoint = endpoint
         assert(endpoint is not None)
@@ -41,6 +41,11 @@ class InfoServiceClient(object):
 
     def annotation_endpoint(self, dataset=None, use_stored=True):
         return self.get_property('annotation_engine_endpoint',
+                                 dataset=dataset,
+                                 use_stored=use_stored)
+
+    def annotation_dataset_name(self, dataset=None, use_stored=True):
+        return self.get_property('annotation_dataset_name',
                                  dataset=dataset,
                                  use_stored=use_stored)
 
