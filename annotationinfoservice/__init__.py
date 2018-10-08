@@ -22,7 +22,7 @@ def create_app(test_config=None):
     else:
         app.config.update(test_config)
     # register blueprints
-    app.register_blueprint(dataset_bp, url_prefix='/')
+    app.register_blueprint(dataset_bp, url_prefix='/info')
     with app.app_context():
         db = SQLAlchemy(model_class=Base)
         db.init_app(app)
