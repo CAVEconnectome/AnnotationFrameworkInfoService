@@ -3,14 +3,8 @@ import os
 import re
 
 class InfoServiceClient(object):
-    def __init__(self, endpoint=None, dataset_name=None):
-        if endpoint is None:
-            #CHECK IF THIS IS THE RIGHT ENVIRONMENT VARIABLE NAME
-            self.endpoint = os.environ.get('ANNOTATIONINFOSERVICE_ENDPOINT')
-        else:
-            self.endpoint = endpoint
-        assert(endpoint is not None)
-
+    def __init__(self, endpoint, dataset_name=None):
+        self.endpoint=endpoint
         self.dataset=dataset_name
         self.session=requests.Session()
         self.cached_data = dict()
@@ -26,7 +20,7 @@ class InfoServiceClient(object):
             dataset = self.dataset
         assert(dataset is not None)
         if (not use_stored) or (dataset not in self.cached_data):
-            url = '{}/api/dataset/{}'.format(self.endpoint, dataset)
+            url='{}/api/dataset/{}'.format(self.endpoint, dataset)
             response = self.session.get(url)
             assert(response.status_code==200)
             self.cached_data[dataset]=response.json()
