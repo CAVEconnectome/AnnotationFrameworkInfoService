@@ -6,11 +6,13 @@ import neuroglancer
 
 mod_datasets = Blueprint('datasets', __name__, url_prefix='/datasets')
 
-
+__version__ = "0.0.2"
 @mod_datasets.route("/")
 def index():
     datasets = DataSet.query.all()
-    return render_template('datasets.html', datasets=datasets)
+    return render_template('datasets.html',
+                            datasets=datasets,
+                            version=__version__)
 
 
 @mod_datasets.route("/dataset/<datasetname>")
@@ -23,7 +25,10 @@ def dataset_view(datasetname):
     state.layout = "xy-3d"
     ng_url = neuroglancer.to_url(state,
                                  prefix=current_app.config['NEUROGLANCER_URL'])
-    return render_template('dataset.html', dataset=dataset, ng_url=ng_url)
+    return render_template('dataset.html',
+                            dataset=dataset,
+                            ng_url=ng_url,
+                            version=__version__)
 
 
 @mod_datasets.route("/api/datasets")

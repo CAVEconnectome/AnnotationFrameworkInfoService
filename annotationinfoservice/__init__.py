@@ -26,7 +26,7 @@ def create_app(test_config=None):
     with app.app_context():
         db = SQLAlchemy(model_class=Base)
         db.init_app(app)
-        # db.create_all()
+        db.create_all()
         admin = setup_admin(app, db)
 
     return app
