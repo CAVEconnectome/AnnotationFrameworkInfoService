@@ -46,7 +46,6 @@ def configure_app(app):
     app.config.from_object(config[config_name])
     if os.environ.get('ANNOTATIONINFOSERVICE_SETTINGS', None) is not None:
         app.config.from_envvar('ANNOTATIONINFOSERVICE_SETTINGS')
-        print('from environment')
     else:
         # instance-folders configuration
         app.config.from_pyfile('config.cfg', silent=True)
