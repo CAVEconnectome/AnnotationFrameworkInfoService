@@ -7,7 +7,7 @@ from .datasets.controllers import mod_datasets as dataset_bp
 from .admin import setup_admin  # noQA: E402
 from flask_sqlalchemy import SQLAlchemy
 
-__version__ = '0.0.6'
+__version__ = '0.0.7'
 
 
 def create_app(test_config=None):
