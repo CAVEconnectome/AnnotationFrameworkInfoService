@@ -12,3 +12,4 @@ psycopg2-binary
 geoalchemy2
 flask-wtf
 neuroglancer
+tornado==4.5.3
