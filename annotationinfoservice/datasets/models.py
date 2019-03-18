@@ -19,3 +19,4 @@ class DataSet(NamedModel, Base):
     annotation_engine_endpoint = Column(String(200), nullable=True)
     synapse_segmentation_source = Column(String(200), nullable=True)
     pychunkedgraph_viewer_source = Column(String(200), nullable=True)
+    graphene_source = Column(String(200), nullable=True)
