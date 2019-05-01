@@ -6,6 +6,7 @@
 
 {% block content %}
 <p>{{dataset.name}}</p>
-<a href = {{ng_url}}>viewer link</a>
+<a href = {{ng_url}}>viewer link</a><br>
+<a href = "{{url_for('datasets.get_dataset', dataset=dataset.name)}}">api description</a>
 
 {% endblock %}
