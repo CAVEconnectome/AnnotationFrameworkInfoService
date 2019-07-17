@@ -20,3 +20,4 @@ class DataSet(NamedModel, Base):
     synapse_segmentation_source = Column(String(200), nullable=True)
     pychunkedgraph_viewer_source = Column(String(200), nullable=True)
     graphene_source = Column(String(200), nullable=True)
+    pychunkedgraph_supervoxel_source = Column(String(200), nullable=True)
