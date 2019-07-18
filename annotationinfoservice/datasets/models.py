@@ -21,3 +21,4 @@ class DataSet(NamedModel, Base):
     pychunkedgraph_viewer_source = Column(String(200), nullable=True)
     graphene_source = Column(String(200), nullable=True)
     pychunkedgraph_supervoxel_source = Column(String(200), nullable=True)
+    analysis_database_ip = Column(String(100), nullable=True)
