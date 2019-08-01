@@ -1,7 +1,7 @@
 # Import flask dependencies
 from flask import Blueprint, jsonify, render_template, current_app
-from annotationinfoservice.datasets.models import DataSet
-from annotationinfoservice.datasets.schemas import DataSetSchema
+from annotationinfoservice.datasets.models import DataSet, PyChunkedGraphTable
+from annotationinfoservice.datasets.schemas import DataSetSchema, PyChunkedGraphTableSchema
 import neuroglancer
 
 mod_datasets = Blueprint('datasets', __name__, url_prefix='/datasets')
@@ -45,3 +45,9 @@ def get_dataset(dataset):
     dataset = DataSet.query.filter_by(name=dataset).first_or_404()
     schema = DataSetSchema()
     return schema.jsonify(dataset)
+
+@mod_datasets.route("/api/pcg_table/<tablename>", methods=['GET'])
+def get_pcg_table(tablename):
+    table = PyChunkedGraphTable.query.filter_by(name=tablename).first_or_404()
+    schema = PyChunkedGraphTableSchema()
+    return schema.jsonify(table)

@@ -53,4 +53,6 @@ def configure_app(app):
     from .datasets.schemas import ma
     db.init_app(app)
     ma.init_app(app)
+    with app.app_context():
+        db.create_all()
     return app
