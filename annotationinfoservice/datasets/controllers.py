@@ -1,7 +1,7 @@
 # Import flask dependencies
 from flask import Blueprint, jsonify, render_template, current_app
 from annotationinfoservice.datasets.models import DataSet
-from annotationinfoservice.datasets.schemas import DataSetSchema
+from annotationinfoservice.datasets.schemas import DataSetSchema, DataSetSchema2
 import neuroglancer
 
 mod_datasets = Blueprint('datasets', __name__, url_prefix='/datasets')
@@ -44,4 +44,10 @@ def get_datasets():
 def get_dataset(dataset):
     dataset = DataSet.query.filter_by(name=dataset).first_or_404()
     schema = DataSetSchema()
+    return schema.jsonify(dataset)
+
+@mod_datasets.route("/api/v2/dataset/<dataset>", methods=['GET'])
+def get_dataset_v2(dataset):
+    dataset = DataSet.query.filter_by(name=dataset).first_or_404()
+    schema = DataSetSchema2()
     return schema.jsonify(dataset)
