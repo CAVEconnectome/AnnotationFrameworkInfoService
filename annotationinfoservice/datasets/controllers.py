@@ -19,7 +19,7 @@ def dataset_view(datasetname):
     dataset = DataSet.query.filter(DataSet.name == datasetname).first_or_404()
     state = neuroglancer.ViewerState()
     state.layers['img'] = neuroglancer.ImageLayer(source=dataset.image_path)
-    state.layers['seg'] = neuroglancer.SegmentationLayer(source=dataset.segmentation_source)
+    state.layers['seg'] = neuroglancer.SegmentationLayer(source=dataset.segmentation_path)
     state.layers['ann'] = neuroglancer.AnnotationLayer()
     state.layout = "xy-3d"
     if dataset.viewer_site is not None:
