@@ -14,20 +14,21 @@ def index():
                             datasets=datasets,
                             version=__version__)
 
-
 @mod_datasets.route("/dataset/<datasetname>")
 def dataset_view(datasetname):
     dataset = DataSet.query.filter(DataSet.name == datasetname).first_or_404()
     state = neuroglancer.ViewerState()
-    state.layers['img'] = neuroglancer.ImageLayer(source='precomputed://'+dataset.image_source)
-    if dataset.pychunkedgraph_viewer_source is not None:
-        state.layers['seg'] = neuroglancer.SegmentationLayer(source='graphene://'+dataset.pychunkedgraph_viewer_source)
-    else:
-        state.layers['seg'] = neuroglancer.SegmentationLayer(source='precomputed://'+dataset.flat_segmentation_source)
+    state.layers['img'] = neuroglancer.ImageLayer(source=dataset.image_path)
+    state.layers['seg'] = neuroglancer.SegmentationLayer(source=dataset.segmentation_source)
     state.layers['ann'] = neuroglancer.AnnotationLayer()
     state.layout = "xy-3d"
+    if dataset.viewer_site is not None:
+        site = dataset.viewer_site
+    else:
+        site = current_app.config['NEUROGLANCER_URL']
     ng_url = neuroglancer.to_url(state,
-                                 prefix=current_app.config['NEUROGLANCER_URL'])
+                                 prefix=site)
+
     return render_template('dataset.html',
                             dataset=dataset,
                             ng_url=ng_url,

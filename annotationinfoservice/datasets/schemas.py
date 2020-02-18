@@ -10,10 +10,11 @@ class DataSetSchema(ma.ModelSchema):
 class DataSetSchema2(ma.ModelSchema):
     class Meta:
         fields = ('name',
-                  'image_source',
-                  'flat_segmentation_source',
-                  'graphene_source',
-                  'synapse_segmentation_source',
-                  'analysis_database_ip')
+                  'image_path',
+                  'segmentation_path',
+                  'synapse_table',
+                  'soma_table',
+                  'analysis_database',
+                  'viewer_site')
         model = models.DataSet
         
