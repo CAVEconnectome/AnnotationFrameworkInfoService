@@ -7,14 +7,15 @@ class DataSetSchema(ma.ModelSchema):
     class Meta:
         model = models.DataSet
 
-class DataSetSchema2(ma.ModelSchema):
+class DataSetSchemaV2(ma.ModelSchema):
     class Meta:
-        fields = ('name',
-                  'image_path',
-                  'segmentation_path',
-                  'synapse_table',
-                  'soma_table',
-                  'analysis_database',
-                  'viewer_site')
-        model = models.DataSet
+        model = models.DataSetV2
+
+class PermissionGroupSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = models.PermissionGroup
         
+class TableMappingSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = models.TableMapping
+        include_fk = True
