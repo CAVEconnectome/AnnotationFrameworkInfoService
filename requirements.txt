@@ -11,5 +11,5 @@ Flask-Migrate
 psycopg2-binary
 geoalchemy2
 flask-wtf
-neuroglancer
+nglui
 tornado==4.5.3
