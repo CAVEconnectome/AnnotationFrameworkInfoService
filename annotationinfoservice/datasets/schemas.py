@@ -7,7 +7,6 @@ class DataSetSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = models.DataSet
 
-
 class DataSetSchemaV2(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = models.DataSetV2
