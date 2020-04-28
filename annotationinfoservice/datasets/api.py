@@ -17,11 +17,10 @@ api_bp = Namespace("Annotation Infoservice", description="Infoservice")
 class DatasetResource(Resource):
     """Dataset Info"""
 
-    @responds(schema=DataSetSchemaV2(many=True))
-    def get(self) -> List[DataSetV2]:
+    def get(self) -> List:
         """Get all Datasets """
-        datasets =  DatasetService.get_all()      
-        return [d.name for d in datasets]
+        datasets =  DatasetService.get_all()
+        return [dataset['name'] for dataset in datasets] 
 
 @api_bp.route("/dataset/<string:dataset>")
 @api_bp.param("dataset", "Dataset Name")
@@ -38,7 +37,6 @@ class DatasetNameResource(Resource):
 class PermissionGroupResource(Resource):
     """Permission Groups"""
 
-    @responds(schema=PermissionGroupSchema)
     def get(self) -> List[PermissionGroup]:
         """Get All Permissions Groups"""
         pgs = PermissionGroupService.get_all()
@@ -46,7 +44,7 @@ class PermissionGroupResource(Resource):
 
 @api_bp.route("/permissiongroup/name/<string:pg_name>")
 @api_bp.param("pg_name", "Permission Group Name")
-class PermissionGroupResource(Resource):
+class PermissionGroupNameResource(Resource):
     """Permission Group by Name"""
 
     @responds(schema=PermissionGroupSchema)
@@ -55,18 +53,24 @@ class PermissionGroupResource(Resource):
 
         return PermissionGroupService.get_permission_group_by_name(pg_name)
 
+@api_bp.route("/tablemapping")
+class TableMappingResource(Resource):
+    """Table Mapping"""
+
+    def get(self) -> List[TableMapping]:
+        """Get All Table Maps"""
+        return TableMappingService.get_all()
+
 @api_bp.route("/tablemapping/service/<string:service_name>")
 @api_bp.param("service_name", "Service Name")
-class TableMappingResource(Resource):
+class TableMappingNameResource(Resource):
     """Table Mapping by Service Name"""
 
     @responds(schema=TableMappingSchema)
     def get(self, service_name: str) -> TableMappingSchema:
         """Get Table Mappings From Service"""
-
         return TableMappingService.get_by_service(service_name)
-
-@api_bp.route("/tablemapping/service/<service_name>/table/<table_name>")
+@api_bp.route("/tablemapping/service/<string:service_name>/table/<string:table_name>")
 @api_bp.param("service_name", "Service Name")
 @api_bp.param("table_name", "Table Name")
 class TableMappingGroupResource(Resource):
