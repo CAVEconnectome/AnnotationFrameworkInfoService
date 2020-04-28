@@ -3,6 +3,7 @@ pandas
 Flask
 sqlalchemy
 flask-sqlalchemy
+marshmallow>=3.0.0
 marshmallow-sqlalchemy==0.22.0
 flask-marshmallow
 flask-admin
