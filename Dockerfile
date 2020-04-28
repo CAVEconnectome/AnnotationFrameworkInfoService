@@ -1,8 +1,7 @@
 FROM tiangolo/uwsgi-nginx-flask:python3.6
 
 COPY requirements.txt /app/.
-RUN pip install numpy tornado==4.5.3 && \
-    pip install -r requirements.txt
+RUN pip install -r requirements.txt
 COPY . /app
 
 
