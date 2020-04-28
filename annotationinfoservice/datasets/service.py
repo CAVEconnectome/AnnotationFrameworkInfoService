@@ -1,6 +1,6 @@
 from typing import List
 from annotationinfoservice.datasets.models import DataSetV2, PermissionGroup, TableMapping
-# from annotationinfoservice.datasets.schemas import DataSetSchemaV2, PermissionGroupSchema, TableMappingSchema 
+from annotationinfoservice.datasets.schemas import DataSetSchemaV2, PermissionGroupSchema, TableMappingSchema 
 
 class DatasetService:
     @staticmethod
@@ -29,12 +29,19 @@ class PermissionGroupService:
 class TableMappingService:
     @staticmethod
     def get_all() -> List[TableMapping]:
-        return TableMapping.query.all()
+        tables = TableMapping.query.all()
+        schema = TableMappingSchema(many=True)
+        return schema.dump(tables)
 
     @staticmethod
-    def get_by_service(service_name: str) -> TableMapping:
-        return TableMapping.query.filter_by(service_name=service_name).all() 
+    def get_by_service(service_name: str) -> List[TableMapping]:
+        table_service = TableMapping.query.filter_by(service_name=service_name).all()
+        schema = TableMappingSchema(many=True)
+        print(f"SCHEMA {schema}")
+        return schema.dump(table_service)
 
     @staticmethod
     def get_permission_group_from_table_and_service(table_name: str, service_name: str) -> TableMapping:
-        return TableMapping.query.filter_by(table_name=table_name, service_name=service_name).first_or_404()
+        table_service_name = TableMapping.query.filter_by(table_name=table_name, service_name=service_name).first_or_404()
+        schema = TableMappingSchema()
+        return schema.dump(table_service_name)
