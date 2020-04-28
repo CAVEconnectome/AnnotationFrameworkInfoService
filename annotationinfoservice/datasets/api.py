@@ -66,10 +66,11 @@ class TableMappingResource(Resource):
 class TableMappingNameResource(Resource):
     """Table Mapping by Service Name"""
 
-    @responds(schema=TableMappingSchema)
+    @responds(schema=TableMappingSchema(many=True))
     def get(self, service_name: str) -> TableMappingSchema:
         """Get Table Mappings From Service"""
         return TableMappingService.get_by_service(service_name)
+
 @api_bp.route("/tablemapping/service/<string:service_name>/table/<string:table_name>")
 @api_bp.param("service_name", "Service Name")
 @api_bp.param("table_name", "Table Name")
