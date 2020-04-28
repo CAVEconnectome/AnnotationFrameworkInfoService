@@ -28,8 +28,9 @@ def create_app(test_config=None):
                 
     logging.basicConfig(level=logging.DEBUG)
 
-    api = Api(app, title="Annotation Infoservice API", version=__version__, doc="/info/doc")
-    api.add_namespace(api_bp, path='/info/api/v2')
+    with app.app_context():
+        api = Api(app, title="Annotation Infoservice API", version=__version__, doc="/info/doc")
+        api.add_namespace(api_bp, path='/info/api/v2')
 
     # load configuration (from test_config if passed)
     if test_config is None:
