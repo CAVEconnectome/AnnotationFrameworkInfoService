@@ -1,6 +1,6 @@
 from typing import List
 from annotationinfoservice.datasets.models import DataSetV2, PermissionGroup, TableMapping
-from annotationinfoservice.datasets.schemas import DataSetSchemaV2, PermissionGroupSchema, TableMappingSchema 
+# from annotationinfoservice.datasets.schemas import DataSetSchemaV2, PermissionGroupSchema, TableMappingSchema 
 
 class DatasetService:
     @staticmethod
@@ -9,8 +9,7 @@ class DatasetService:
 
     @staticmethod
     def get_dataset_by_name(dataset: str) -> DataSetV2:
-        dataset = DataSetV2.query.filter_by(name=dataset).first_or_404()
-        return dataset
+        return DataSetV2.query.filter_by(name=dataset).first_or_404()
 
 
 class PermissionGroupService:
@@ -23,10 +22,8 @@ class PermissionGroupService:
         return PermissionGroup.query.get(id)
 
     @staticmethod
-    def get_permissiongroup_by_name(pg_name: str) -> PermissionGroup:
-        pg = PermissionGroup.query.filter_by(name=pg_name).first_or_404()
-        # schema = PermissionGroupSchema()
-        return pg
+    def get_permission_group_by_name(pg_name: str) -> PermissionGroup:
+        return PermissionGroup.query.filter_by(name=pg_name).first_or_404()
 
 
 class TableMappingService:
@@ -36,8 +33,8 @@ class TableMappingService:
 
     @staticmethod
     def get_by_service(service_name: str) -> TableMapping:
-        return TableMapping.query.filter_by(service_name=service_name).all()
+        return TableMapping.query.filter_by(service_name=service_name).all() 
 
     @staticmethod
-    def get_permission_group_from_table_and_service(table_name: str, service_name: str):
+    def get_permission_group_from_table_and_service(table_name: str, service_name: str) -> TableMapping:
         return TableMapping.query.filter_by(table_name=table_name, service_name=service_name).first_or_404()
