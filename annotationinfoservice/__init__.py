@@ -8,6 +8,7 @@ from annotationinfoservice.admin import setup_admin  # noQA: E402
 from flask_sqlalchemy import SQLAlchemy
 from flask_restx import Api
 import logging
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 __version__ = '0.4.0'
 
@@ -25,7 +26,8 @@ def create_app(test_config=None):
                 instance_path=get_instance_folder_path(),
                 instance_relative_config=True,
                 static_folder="../static")
-                
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_port=1, x_for=1, x_host=1, x_prefix=1)
+         
     logging.basicConfig(level=logging.DEBUG)
 
     with app.app_context():
