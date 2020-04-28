@@ -3,8 +3,7 @@ pandas
 Flask
 sqlalchemy
 flask-sqlalchemy
-marshmallow
-marshmallow-sqlalchemy
+marshmallow-sqlalchemy==0.22.0
 flask-marshmallow
 flask-admin
 flask-restx
@@ -12,3 +11,4 @@ flask-accepts
 psycopg2-binary
 geoalchemy2
 flask-wtf
+nglui

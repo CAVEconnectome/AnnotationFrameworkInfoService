@@ -11,6 +11,7 @@ class DataSetSchemaV2(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = models.DataSetV2
 
+
 class PermissionGroupSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = models.PermissionGroup
