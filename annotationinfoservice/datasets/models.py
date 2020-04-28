@@ -10,6 +10,10 @@ class NamedModel(object):
     def __repr__(self):
         return "{}({})".format(self.name, self.id)
 
+    
+    def __getitem__(self, field):
+        return self.__dict__[field]
+
 class DataSet(NamedModel, Base):
     __tablename__ = "dataset"
     image_source = Column(String(200), nullable=False)
