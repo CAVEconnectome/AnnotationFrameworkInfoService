@@ -19,12 +19,12 @@ def dataset_view(datasetname):
     dataset = DataSetV2.query.filter(DataSetV2.name == datasetname).first_or_404()
     
     img_layer = ImageLayerConfig(name='layer23',
-                                    source=dataset.image_path,
+                                    source=dataset.image_source,
                                     )
     # we want the segmentation layer with our target neuron always on
     seg_layer = SegmentationLayerConfig(name = 'seg',
-                                        source=dataset.segmentation_path)
-    ann_layer = AnnotationLayerConfig(name='ann', mapping_rules=syn_points, linked_segmentation_layer='seg')
+                                        source=dataset.segmentation_source)
+    ann_layer = AnnotationLayerConfig(name='ann')
                                 
     # setup a state builder with this layer pipeline
     sb = StateBuilder([img_layer, seg_layer, ann_layer])

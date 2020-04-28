@@ -4,7 +4,7 @@ pandas
 Flask
 sqlalchemy
 flask-sqlalchemy
-marshmallow-sqlalchemy
+marshmallow-sqlalchemy==0.22.0
 flask-marshmallow
 flask-admin
 Flask-Migrate
