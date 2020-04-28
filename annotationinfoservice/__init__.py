@@ -29,7 +29,7 @@ def create_app(test_config=None):
     logging.basicConfig(level=logging.DEBUG)
 
     api = Api(app, title="Annotation Infoservice API", version=__version__, doc="/info/doc")
-    api.add_namespace(api_bp, path='/api/v2')
+    api.add_namespace(api_bp, path='/info/api/v2')
 
     # load configuration (from test_config if passed)
     if test_config is None:
@@ -38,7 +38,7 @@ def create_app(test_config=None):
         app.config.update(test_config)
     
     with app.app_context():
-        app.register_blueprint(views_bp)
+        app.register_blueprint(views_bp, url_prefix='/info')
         db.init_app(app)
         db.create_all()
         admin = setup_admin(app, db)
