@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, url_for
+from flask import Flask, jsonify, url_for, redirect, Blueprint
 from annotationinfoservice.config import configure_app
 from annotationinfoservice.database import Base
 from annotationinfoservice.utils import get_instance_folder_path
@@ -14,7 +14,6 @@ __version__ = '0.4.0'
 
 db = SQLAlchemy(model_class=Base)
 
-
 def has_no_empty_params(rule):
     defaults = rule.defaults if rule.defaults is not None else ()
     arguments = rule.arguments if rule.arguments is not None else ()
@@ -25,14 +24,11 @@ def create_app(test_config=None):
     app = Flask(__name__,
                 instance_path=get_instance_folder_path(),
                 instance_relative_config=True,
+                static_url_path = "/info/static",
                 static_folder="../static")
-    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_port=1, x_for=1, x_host=1, x_prefix=1)
-         
+    #app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_port=1, x_for=1, x_host=1, x_prefix=1)
+    #app.wsgi_app = ReverseProxied(app.wsgi_app)   
     logging.basicConfig(level=logging.DEBUG)
-
-    with app.app_context():
-        api = Api(app, title="Annotation Infoservice API", version=__version__, doc="/info/doc")
-        api.add_namespace(api_bp, path='/info/api/v2')
 
     # load configuration (from test_config if passed)
     if test_config is None:
@@ -40,12 +36,16 @@ def create_app(test_config=None):
     else:
         app.config.update(test_config)
     
+    apibp = Blueprint('api', __name__, url_prefix='/info/api')
     with app.app_context():
         app.register_blueprint(views_bp, url_prefix='/info')
+        api = Api(apibp, title="Annotation Infoservice API", version=__version__, doc="/doc")
+        api.add_namespace(api_bp, path='/v2')
+        app.register_blueprint(apibp)
         db.init_app(app)
         db.create_all()
         admin = setup_admin(app, db)
-    
+
     @app.route("/info/health")
     def health():
         return jsonify("healthy"), 200
@@ -64,4 +64,3 @@ def create_app(test_config=None):
     return app
 
 
-    return app
