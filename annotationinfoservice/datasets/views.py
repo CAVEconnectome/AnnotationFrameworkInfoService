@@ -20,8 +20,8 @@ def index():
 def datastack_view(datastackname):
     datastack = DataStackService.get_datastack_by_name(datastackname)
     
-    img_layer = ImageLayerConfig(name='layer23',
-                                 source=datastack.image_source)
+    img_layer = ImageLayerConfig(name='img',
+                                 source=datastack.aligned_volume.image_source)
     # we want the segmentation layer with our target neuron always on
     seg_layer = SegmentationLayerConfig(name = 'seg',
                                         source=datastack.segmentation_source)
