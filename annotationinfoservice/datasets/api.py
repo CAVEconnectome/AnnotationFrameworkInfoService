@@ -91,7 +91,7 @@ class DataStackNameResource(Resource):
 @api_bp.route("/datastack/full/<string:datastack>")
 @api_bp.param("datastack", "DataStack Name")
 class DataStackNameFullResource(Resource):
-    """DataStack by Name with AlignedVolume Details"""
+    """DataStack by Name with AlignedVolume"""
 
     @responds(schema=DataStackSchemaFull)
     @api_bp.doc('get datastack full', security='apikey')
