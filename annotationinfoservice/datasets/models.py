@@ -41,7 +41,7 @@ class DataStack(NamedModel, Base):
     segmentation_source = Column(String(200), nullable=True)
     analysis_database = Column(String(100), nullable=True)
     viewer_site = Column(String(200), nullable=True)
-    synapse_table= Column(String(100), nullable=True)
+    synapse_table = Column(String(100), nullable=True)
     soma_table = Column(String(100), nullable=True)
     local_server = Column(String(200), nullable=False)
     description = Column(String(500), nullable=True)
