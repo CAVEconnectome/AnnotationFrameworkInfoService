@@ -3,6 +3,7 @@ from flask_admin.contrib.sqla import ModelView
 from annotationinfoservice.datasets.models import DataStack,\
      TableMapping, PermissionGroup, AlignedVolume
 from middle_auth_client import auth_requires_admin
+from flask import redirect
 
 @auth_requires_admin
 def test_super_admin():
