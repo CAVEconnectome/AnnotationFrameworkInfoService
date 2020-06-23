@@ -24,6 +24,10 @@ class DataStackService:
     def get_datastack_by_name(datastack: str) -> DataStack:
         return DataStack.query.filter_by(name=datastack).first_or_404()
 
+    @staticmethod
+    def get_datastacks_by_aligned_volume_id(aligned_volume_id: int) -> List[DataStack]:
+        return DataStack.query.filter_by(aligned_volume_id = aligned_volume_id).all()
+
 
 class PermissionGroupService:
     @staticmethod

@@ -2,7 +2,7 @@
 from flask import jsonify, render_template, current_app, make_response, Blueprint
 from flask_accepts import accepts, responds
 from flask_restx import Namespace, Resource
-from annotationinfoservice.datasets.schemas import DataStackSchema, TableMappingSchema, PermissionGroupSchema, AlignedVolumeSchema
+from annotationinfoservice.datasets.schemas import DataStackSchema, TableMappingSchema, PermissionGroupSchema, AlignedVolumeSchema, DataStackSchemaFull
 from annotationinfoservice.datasets.service import DataStackService, TableMappingService, PermissionGroupService, AlignedVolumeService
 from typing import List
 
@@ -34,12 +34,12 @@ class AlignedVolumeResource(Resource):
 @api_bp.route("/aligned_volume/id/<int:id>")
 @api_bp.param("id", "AlignedVolume Id")
 class AlignedVolumeIdResource(Resource):
-    """AlignedVolume by Name"""
+    """AlignedVolume by Id"""
 
     @api_bp.doc('get aligned_volume by id', security='apikey')
     @responds(schema=AlignedVolumeSchema)
     def get(self, id: int) -> AlignedVolumeSchema:
-        """Get Aligned Volume By Name"""
+        """Get Aligned Volume By Id"""
         return AlignedVolumeService.get_aligned_volume_by_id(id)
 
 @api_bp.route("/aligned_volume/<string:aligned_volume_name>")
@@ -52,6 +52,19 @@ class AlignedVolumeNameResource(Resource):
     def get(self, aligned_volume_name: str) -> AlignedVolumeSchema:
         """Get AlignedVolume By Name"""
         return AlignedVolumeService.get_aligned_volume_by_name(aligned_volume_name)
+
+@api_bp.route("/aligned_volume/<string:aligned_volume_name>/datastacks")
+@api_bp.param("aligned_volume_name", "AlignedVolume Name")
+class DataStacksInAlignedVolumesResource(Resource):
+    """DataStacks in an Aligned Volume by Name"""
+
+    @api_bp.doc('get datastacks in aligned_volume', security='apikey')
+    def get(self, aligned_volume_name: str) -> List[str]:
+        """Get DataStacks in an Aligned Volume by Name"""
+        av= AlignedVolumeService.get_aligned_volume_by_name(aligned_volume_name)
+        ds=DataStackService.get_datastacks_by_aligned_volume_id(av.id)
+        print(ds)
+        return [d.name for d in ds]
 
 @api_bp.route("/datastacks")
 class DataStackResource(Resource):
@@ -74,6 +87,19 @@ class DataStackNameResource(Resource):
         """Get DataStack By Name"""
 
         return DataStackService.get_datastack_by_name(datastack)
+
+@api_bp.route("/datastack/full/<string:datastack>")
+@api_bp.param("datastack", "DataStack Name")
+class DataStackNameFullResource(Resource):
+    """DataStack by Name with AlignedVolume Details"""
+
+    @responds(schema=DataStackSchemaFull)
+    @api_bp.doc('get datastack full', security='apikey')
+    def get(self, datastack: str) -> DataStackSchemaFull:
+        """Get DataStack By Name with AlignedVolume Details"""
+        ds = DataStackService.get_datastack_by_name(datastack)
+        return ds
+
 
 @api_bp.route("/permissiongroups")
 class PermissionGroupResource(Resource):
