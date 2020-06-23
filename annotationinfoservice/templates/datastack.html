@@ -5,8 +5,8 @@
 {% endblock %}
 
 {% block content %}
-<p>{{dataset.name}}</p>
+<p>{{datastack.name}}</p>
 <a href = {{ng_url}}>viewer link</a><br>
-<a href = "{{url_for('Annotation Infoservice_dataset_name_resource', dataset=dataset.name)}}">api description</a>
+<a href = "{{url_for('api.Annotation Infoservice_data_stack_name_resource', datastack=datastack.name)}}">api description</a>
 
 {% endblock %}

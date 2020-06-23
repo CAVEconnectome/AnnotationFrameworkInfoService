@@ -5,7 +5,7 @@ from annotationinfoservice.database import Base
 
 class NamedModel(object):
     id = Column(Integer, primary_key=True)
-    name = Column(String(100), nullable=False)
+    name = Column(String(100), nullable=False, unique=True)
 
     def __repr__(self):
         return "{}({})".format(self.name, self.id)
@@ -27,14 +27,24 @@ class DataSet(NamedModel, Base):
     pychunkedgraph_supervoxel_source = Column(String(200), nullable=True)
     analysis_database_ip = Column(String(100), nullable=True)
 
-class DataSetV2(NamedModel, Base):
-    __tablename__ = "datasetv2"
+class AlignedVolume(NamedModel, Base):
+    __tablename__ = "aligned_volume"
+    description = Column(String(500), nullable=True)
     image_source = Column(String(200), nullable=False)
+    # preferred_stack_id = Column(Integer, ForeignKey('datastack.id'))
+    # preferred_stack = relationship("DataStack")
+
+class DataStack(NamedModel, Base):
+    __tablename__ = "datastack"
+    aligned_volume_id = Column(Integer, ForeignKey('aligned_volume.id'))
+    aligned_volume = relationship("AlignedVolume")
     segmentation_source = Column(String(200), nullable=True)
     analysis_database = Column(String(100), nullable=True)
     viewer_site = Column(String(200), nullable=True)
     synapse_table= Column(String(100), nullable=True)
     soma_table = Column(String(100), nullable=False)
+    local_server = Column(String(200), nullable=False)
+    description = Column(String(500), nullable=True)
 
 class PermissionGroup(NamedModel, Base):
     __tablename__ = "permissiongroup"

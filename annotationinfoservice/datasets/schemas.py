@@ -3,14 +3,15 @@ from flask_marshmallow import Marshmallow
 
 ma = Marshmallow()
 
-class DataSetSchema(ma.SQLAlchemyAutoSchema):
+class AlignedVolumeSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
-        model = models.DataSet
+        model = models.AlignedVolume
 
-class DataSetSchemaV2(ma.SQLAlchemyAutoSchema):
+class DataStackSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
-        model = models.DataSetV2
-
+        model = models.DataStack
+        
+    aligned_volume = ma.HyperlinkRelated("api.Annotation Infoservice_aligned_volume_id_resource", "id")
 
 class PermissionGroupSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
@@ -19,4 +20,5 @@ class PermissionGroupSchema(ma.SQLAlchemyAutoSchema):
 class TableMappingSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = models.TableMapping
-        include_fk = True
+    
+    
