@@ -6,6 +6,10 @@
 
 {% block content %}
 <p>{{datastack.name}}</p>
+<p>
+<h4>Description:</h4>
+{{datastack.description}}
+</p>
 <a href = {{ng_url}}>viewer link</a><br>
 <a href = "{{url_for('api.Annotation Infoservice_data_stack_name_full_resource', datastack=datastack.name)}}">api description</a>
 
