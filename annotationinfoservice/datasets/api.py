@@ -126,9 +126,10 @@ class PermissionGroupResource(Resource):
 class PermissionGroupNameResource(Resource):
     """Permission Group by Name"""
 
-    @auth_required
+    
     @responds(schema=PermissionGroupSchema)
     @api_bp.doc('get permission group', security='apikey')
+    @auth_required
     def get(self, pg_name: str) -> PermissionGroupSchema:
         """Get Permissions Group by Name"""
 
@@ -138,8 +139,9 @@ class PermissionGroupNameResource(Resource):
 class TableMappingResource(Resource):
     """Table Mapping"""
 
-    @auth_required
+    
     @api_bp.doc('get table mappings', security='apikey')
+    @auth_required
     def get(self) -> List[str]:
         """Get All Table Maps"""
         return TableMappingService.get_all()
@@ -149,9 +151,10 @@ class TableMappingResource(Resource):
 class TableMappingNameResource(Resource):
     """Table Mapping by Service Name"""
 
-    @auth_required
+    
     @responds(schema=TableMappingSchema(many=True))
     @api_bp.doc('get table mappings by service', security='apikey')
+    @auth_required
     def get(self, service_name: str) -> TableMappingSchema:
         """Get Table Mappings From Service"""
         return TableMappingService.get_by_service(service_name)
@@ -162,9 +165,10 @@ class TableMappingNameResource(Resource):
 class TableMappingGroupResource(Resource):
     """Table Map Group by Service and Table Name"""
 
-    @auth_required
+    
     @responds(schema=TableMappingSchema)
     @api_bp.doc('get table mapping group', security='apikey')
+    @auth_required
     def get(self, service_name: str, table_name: str) -> TableMappingSchema:
         """Get Table Map Group by Service and Table Name"""
         return TableMappingService.get_permission_group_from_table_and_service(service_name, table_name)

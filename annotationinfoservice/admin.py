@@ -19,9 +19,13 @@ class MyAdminIndexView(AdminIndexView):
 
      
      @expose('/', methods=["GET"])
+     @auth_required
      def index(self):
           return super(MyAdminIndexView, self).index()
 
+     @auth_required
+     def is_accessible(self):
+        return True
 
 def setup_admin(app, db):
     admin = Admin(app, name="infoservice admin", index_view=MyAdminIndexView(url='/info/admin'))

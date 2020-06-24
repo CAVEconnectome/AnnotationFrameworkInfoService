@@ -8,6 +8,7 @@ ul {
 
 li {
     float: left;
+    text-align: center;
 }
 
 li a {
@@ -21,4 +22,8 @@ li a {
 /* Change the link color to #111 (black) on hover */
 li a:hover {
     background-color: #111;
+}
+
+nav {
+    color: white;
 }
