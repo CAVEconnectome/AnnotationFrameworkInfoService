@@ -12,6 +12,12 @@
     <li>
       <a href="/info/api/doc">API Doc</a>    
     </li>
+    
+    {% if is_admin %}
+    <li>
+        <a href="{{ url_for ('admin.index')}}">Admin</a>
+    </li>
+    {% endif %}
   </ul>
 </nav>
 <section class="content">

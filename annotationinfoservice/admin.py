@@ -1,4 +1,4 @@
-from flask_admin import Admin
+from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.contrib.sqla import ModelView
 from annotationinfoservice.datasets.models import DataStack,\
      TableMapping, PermissionGroup, AlignedVolume
@@ -14,11 +14,21 @@ class SuperAdminView(ModelView):
         # redirect to login page if user doesn't have access
         return redirect(url_for('admin.index'))
 
+# Create customized index view class that handles login & registration
+class MyAdminIndexView(AdminIndexView):
+
+     
+     @expose('/', methods=["GET"])
+     def index(self):
+          return super(MyAdminIndexView, self).index()
+
+
 def setup_admin(app, db):
-    admin = Admin(app, name="infoservice admin", url='/info/admin')
+    admin = Admin(app, name="infoservice admin", index_view=MyAdminIndexView(url='/info/admin'))
     admin.add_view(SuperAdminView(AlignedVolume, db.session))
     admin.add_view(SuperAdminView(DataStack, db.session))
     admin.add_view(SuperAdminView(PermissionGroup, db.session))
     admin.add_view(SuperAdminView(TableMapping, db.session))
+
     
     return admin

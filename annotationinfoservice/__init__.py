@@ -9,6 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_restx import Api
 import logging
 from werkzeug.middleware.proxy_fix import ProxyFix
+from middle_auth_client import auth_required
 
 __version__ = '0.4.0'
 
@@ -38,6 +39,7 @@ def create_app(test_config=None):
     
     apibp = Blueprint('api', __name__, url_prefix='/info/api')
 
+    @auth_required
     @apibp.route('/versions')
     def versions():
         return jsonify([2]), 200
@@ -55,7 +57,8 @@ def create_app(test_config=None):
     @app.route("/info/health")
     def health():
         return jsonify("healthy"), 200
-   
+    
+    @auth_required
     @app.route("/info/site-map")
     def site_map():
         links = []

@@ -1,21 +1,22 @@
-from flask import jsonify, render_template, current_app, make_response, Blueprint
+from flask import jsonify, render_template, current_app, make_response, Blueprint, g
 from annotationinfoservice.datasets.service import DataStackService, AlignedVolumeService
 from nglui.statebuilder import ImageLayerConfig, SegmentationLayerConfig, AnnotationLayerConfig, StateBuilder
-
+from middle_auth_client import auth_required
 
 __version__ = "0.4.0"
 
 views_bp = Blueprint('datastacks', __name__, url_prefix='/datastacks')
 
-
+@auth_required
 @views_bp.route("/")
 def index():
     datastacks = DataStackService.get_all()
     return render_template('datastacks.html',
                             datastacks=datastacks,
+                            is_admin = True,
                             version=__version__)
 
-
+@auth_required
 @views_bp.route("/datastack/<datastackname>")
 def datastack_view(datastackname):
     datastack = DataStackService.get_datastack_by_name(datastackname)

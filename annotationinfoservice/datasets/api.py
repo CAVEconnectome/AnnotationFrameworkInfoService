@@ -5,7 +5,7 @@ from flask_restx import Namespace, Resource
 from annotationinfoservice.datasets.schemas import DataStackSchema, TableMappingSchema, PermissionGroupSchema, AlignedVolumeSchema, DataStackSchemaFull
 from annotationinfoservice.datasets.service import DataStackService, TableMappingService, PermissionGroupService, AlignedVolumeService
 from typing import List
-
+from middle_auth_client import auth_required
 
 __version__ = "0.4.0"
 
@@ -26,6 +26,7 @@ api_bp = Namespace("Annotation Infoservice",
 class AlignedVolumeResource(Resource):
     """Aligned Volume System Info"""
 
+    @auth_required
     def get(self) -> List:
         """Get all Aligned Volumes """
         aligned_vols =  AlignedVolumeService.get_all()
@@ -36,17 +37,20 @@ class AlignedVolumeResource(Resource):
 class AlignedVolumeIdResource(Resource):
     """AlignedVolume by Id"""
 
+    @auth_required
     @api_bp.doc('get aligned_volume by id', security='apikey')
     @responds(schema=AlignedVolumeSchema)
     def get(self, id: int) -> AlignedVolumeSchema:
         """Get Aligned Volume By Id"""
         return AlignedVolumeService.get_aligned_volume_by_id(id)
 
+
 @api_bp.route("/aligned_volume/<string:aligned_volume_name>")
 @api_bp.param("aligned_volume_name", "AlignedVolume Name")
 class AlignedVolumeNameResource(Resource):
     """Aligned Volume by Name"""
 
+    @auth_required
     @api_bp.doc('get aligned_volume', security='apikey')
     @responds(schema=AlignedVolumeSchema)
     def get(self, aligned_volume_name: str) -> AlignedVolumeSchema:
@@ -58,6 +62,7 @@ class AlignedVolumeNameResource(Resource):
 class DataStacksInAlignedVolumesResource(Resource):
     """DataStacks in an Aligned Volume by Name"""
 
+    @auth_required
     @api_bp.doc('get datastacks in aligned_volume', security='apikey')
     def get(self, aligned_volume_name: str) -> List[str]:
         """Get DataStacks in an Aligned Volume by Name"""
@@ -70,6 +75,7 @@ class DataStacksInAlignedVolumesResource(Resource):
 class DataStackResource(Resource):
     """Dataset Info"""
 
+    @auth_required
     @api_bp.doc('get datastacks', security='apikey')
     def get(self) -> List:
         """Get all Datastacks """
@@ -81,6 +87,7 @@ class DataStackResource(Resource):
 class DataStackNameResource(Resource):
     """DataStack by Name"""
 
+    @auth_required
     @responds(schema=DataStackSchema)
     @api_bp.doc('get datastack', security='apikey')
     def get(self, datastack: str) -> DataStackSchema:
@@ -88,11 +95,13 @@ class DataStackNameResource(Resource):
 
         return DataStackService.get_datastack_by_name(datastack)
 
+
 @api_bp.route("/datastack/full/<string:datastack>")
 @api_bp.param("datastack", "DataStack Name")
 class DataStackNameFullResource(Resource):
     """DataStack by Name with AlignedVolume"""
 
+    @auth_required
     @responds(schema=DataStackSchemaFull)
     @api_bp.doc('get datastack full', security='apikey')
     def get(self, datastack: str) -> DataStackSchemaFull:
@@ -105,6 +114,7 @@ class DataStackNameFullResource(Resource):
 class PermissionGroupResource(Resource):
     """Permission Groups"""
 
+    @auth_required
     @api_bp.doc('get permission groups', security='apikey')
     def get(self) -> List[str]:
         """Get All Permissions Groups"""
@@ -116,6 +126,7 @@ class PermissionGroupResource(Resource):
 class PermissionGroupNameResource(Resource):
     """Permission Group by Name"""
 
+    @auth_required
     @responds(schema=PermissionGroupSchema)
     @api_bp.doc('get permission group', security='apikey')
     def get(self, pg_name: str) -> PermissionGroupSchema:
@@ -127,6 +138,7 @@ class PermissionGroupNameResource(Resource):
 class TableMappingResource(Resource):
     """Table Mapping"""
 
+    @auth_required
     @api_bp.doc('get table mappings', security='apikey')
     def get(self) -> List[str]:
         """Get All Table Maps"""
@@ -137,6 +149,7 @@ class TableMappingResource(Resource):
 class TableMappingNameResource(Resource):
     """Table Mapping by Service Name"""
 
+    @auth_required
     @responds(schema=TableMappingSchema(many=True))
     @api_bp.doc('get table mappings by service', security='apikey')
     def get(self, service_name: str) -> TableMappingSchema:
@@ -149,6 +162,7 @@ class TableMappingNameResource(Resource):
 class TableMappingGroupResource(Resource):
     """Table Map Group by Service and Table Name"""
 
+    @auth_required
     @responds(schema=TableMappingSchema)
     @api_bp.doc('get table mapping group', security='apikey')
     def get(self, service_name: str, table_name: str) -> TableMappingSchema:
