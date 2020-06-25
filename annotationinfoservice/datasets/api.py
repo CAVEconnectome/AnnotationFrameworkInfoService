@@ -26,7 +26,6 @@ api_bp = Namespace("Annotation Infoservice",
 class AlignedVolumeResource(Resource):
     """Aligned Volume System Info"""
 
-    @auth_required
     def get(self) -> List:
         """Get all Aligned Volumes """
         aligned_vols =  AlignedVolumeService.get_all()
@@ -50,7 +49,6 @@ class AlignedVolumeIdResource(Resource):
 class AlignedVolumeNameResource(Resource):
     """Aligned Volume by Name"""
 
-    @auth_required
     @api_bp.doc('get aligned_volume', security='apikey')
     @responds(schema=AlignedVolumeSchema)
     def get(self, aligned_volume_name: str) -> AlignedVolumeSchema:
