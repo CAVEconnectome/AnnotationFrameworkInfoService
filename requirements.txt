@@ -12,5 +12,5 @@ flask-accepts
 psycopg2-binary
 geoalchemy2
 flask-wtf
-nglui
+nglui==2.1.1
 middle-auth-client==2.4.3
