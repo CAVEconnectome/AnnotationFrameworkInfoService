@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, ARRAY
 from sqlalchemy.orm import relationship
 from annotationinfoservice.database import Base
 
@@ -31,6 +31,7 @@ class AlignedVolume(NamedModel, Base):
     __tablename__ = "aligned_volume"
     description = Column(String(500), nullable=True)
     image_source = Column(String(200), nullable=False)
+    base_resolution = Column(ARRAY(Integer,dimensions=1))
     # preferred_stack_id = Column(Integer, ForeignKey('datastack.id'))
     # preferred_stack = relationship("DataStack")
 
