@@ -31,7 +31,7 @@ class AlignedVolume(NamedModel, Base):
     __tablename__ = "aligned_volume"
     description = Column(String(500), nullable=True)
     image_source = Column(String(200), nullable=False)
-    base_resolution = Column(ARRAY(Integer,dimensions=1))
+    # base_resolution = Column(ARRAY(Integer,dimensions=1))
     # preferred_stack_id = Column(Integer, ForeignKey('datastack.id'))
     # preferred_stack = relationship("DataStack")
 
@@ -56,4 +56,7 @@ class TableMapping(Base):
     table_name = Column(String(100), nullable=False)
     service_name = Column(String(100), nullable=False)
     permissiongroup_id = Column(Integer, ForeignKey('permissiongroup.id'))
-    permissiongroup = relationship("PermissionGroup")
+    permission_group = relationship("PermissionGroup")
+    
+    def __getitem__(self, field):
+        return self.__dict__[field]
