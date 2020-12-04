@@ -7,7 +7,7 @@ from annotationinfoservice.datasets.service import DataStackService, TableMappin
 from typing import List
 from middle_auth_client import auth_required
 
-__version__ = "3.0.0"
+__version__ = "3.1.0"
 
 authorizations = {
     'apikey': {
