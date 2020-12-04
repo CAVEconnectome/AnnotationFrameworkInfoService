@@ -3,7 +3,7 @@ from annotationinfoservice.datasets.service import DataStackService, AlignedVolu
 from nglui.statebuilder import ImageLayerConfig, SegmentationLayerConfig, AnnotationLayerConfig, StateBuilder
 from middle_auth_client import auth_required
 import os
-__version__ = "3.0.0"
+__version__ = "2.2.0"
 
 views_bp = Blueprint('datastacks', __name__, url_prefix='/datastacks')
 

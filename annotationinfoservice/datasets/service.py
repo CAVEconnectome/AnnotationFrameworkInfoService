@@ -47,18 +47,12 @@ class TableMappingService:
     @staticmethod
     def get_all() -> List[TableMapping]:
         tables = TableMapping.query.all()
-        schema = TableMappingSchema(many=True)
-        return schema.dump(tables)
+        return tables
 
     @staticmethod
     def get_by_service(service_name: str) -> List[TableMapping]:
-        table_service = TableMapping.query.filter_by(service_name=service_name).all()
-        schema = TableMappingSchema(many=True)
-        print(f"SCHEMA {schema}")
-        return schema.dump(table_service)
+        return TableMapping.query.filter_by(service_name=service_name).all()
 
     @staticmethod
     def get_permission_group_from_table_and_service(table_name: str, service_name: str) -> TableMapping:
-        table_service_name = TableMapping.query.filter_by(table_name=table_name, service_name=service_name).first_or_404()
-        schema = TableMappingSchema()
-        return schema.dump(table_service_name)
+        return TableMapping.query.filter_by(table_name=table_name, service_name=service_name).first_or_404()
