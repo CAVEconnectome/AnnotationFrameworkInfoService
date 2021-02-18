@@ -12,5 +12,26 @@
 </p>
 <a href = {{ng_url}}>viewer link</a><br>
 <a href = "{{url_for('api.Annotation Infoservice_data_stack_name_full_resource', datastack=datastack.name)}}">api description</a>
-
+<p>
+<table>
+  <tr>
+    <td>Service Links</td>
+  </tr>
+  <tr>
+    <td><a href="{{datastack.local_server}}/annotation/views/aligned_volume/{{datastack.aligned_volume.name}}">
+      Annotation Engine</a></td>
+  </tr>
+  <tr>
+    <td><a href="{{datastack.local_server}}/materialize/views/datastack/{{datastack.name}}">
+      Materialization Engine</a>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a href="/schema">
+        Schema Service</a>
+    </td>
+  </tr>
+</table>
+</p>
 {% endblock %}
