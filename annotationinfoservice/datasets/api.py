@@ -223,7 +223,6 @@ class PermissionGroupForTableMappingResource(Resource):
     """Get Permission Group for a Table Mapping by Service and Table Name"""
 
     @api_bp.doc("get table mapping group", security="apikey")
-    @auth_required
     def get(self, service_name: str, table_name: str) -> str:
         """Get Permission Group of Table Map Group by Service and Table Name"""
         table_map = TableMappingService.get_permission_group_from_table_and_service(
