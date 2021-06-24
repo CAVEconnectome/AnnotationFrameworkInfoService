@@ -9,9 +9,12 @@ from annotationinfoservice.datasets.service import (
     PermissionGroupService,
     AlignedVolumeService,
 )
-from .app_utils import user_has_permission
 from typing import List
-from middle_auth_client import auth_required, auth_requires_permission
+from middle_auth_client import (
+    auth_required,
+    auth_requires_permission,
+    user_has_permission,
+)
 
 __version__ = "3.2.0"
 

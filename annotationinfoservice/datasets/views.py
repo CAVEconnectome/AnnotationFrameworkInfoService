@@ -9,9 +9,11 @@ from nglui.statebuilder import (
     AnnotationLayerConfig,
     StateBuilder,
 )
-from middle_auth_client import auth_required
-from middle_auth_client.decorators import auth_requires_permission
-from .app_utils import user_has_permission
+from middle_auth_client import (
+    auth_required,
+    user_has_permission,
+    auth_requires_permission,
+)
 import flask
 import os
 
