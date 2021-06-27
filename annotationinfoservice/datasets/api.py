@@ -38,7 +38,7 @@ class AlignedVolumeResource(Resource):
         aligned_vols = [
             a
             for a in AlignedVolumeService.get_all()
-            if user_has_permission("view", a, "aligned_volume")
+            if user_has_permission("view", a.name, "aligned_volume")
         ]
 
         return [av["name"] for av in aligned_vols]
