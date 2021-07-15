@@ -13,4 +13,4 @@ psycopg2-binary
 geoalchemy2
 flask-wtf
 nglui==2.1.1
-middle-auth-client>=3.6.3
+middle-auth-client>=3.6.4
