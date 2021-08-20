@@ -11,7 +11,7 @@ import logging
 from werkzeug.middleware.proxy_fix import ProxyFix
 from middle_auth_client import auth_required
 
-__version__ = '3.4.3'
+__version__ = '3.4.4'
 
 db = SQLAlchemy(model_class=Base)
 
