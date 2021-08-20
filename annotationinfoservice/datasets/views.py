@@ -17,7 +17,7 @@ from middle_auth_client import (
 import flask
 import os
 
-__version__ = "3.4.5"
+__version__ = "3.4.6"
 
 views_bp = Blueprint("datastacks", __name__, url_prefix="/datastacks")
 
