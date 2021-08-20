@@ -6,7 +6,7 @@ import neuroglancer
 
 mod_datasets = Blueprint('datasets', __name__, url_prefix='/datasets')
 
-__version__ = "3.4.6"
+__version__ = "3.5.0"
 @mod_datasets.route("/")
 def index():
     datasets = DataSet.query.all()
