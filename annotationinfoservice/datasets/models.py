@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, ARRAY
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, ARRAY
 from sqlalchemy.orm import relationship
 from annotationinfoservice.database import Base
 
@@ -46,7 +46,10 @@ class DataStack(NamedModel, Base):
     soma_table = Column(String(100), nullable=True)
     local_server = Column(String(200), nullable=False)
     description = Column(String(500), nullable=True)
-
+    viewer_resolution_x = Column(Float(), nullable=True)
+    viewer_resolution_y = Column(Float(), nullable=True)
+    viewer_resolution_z = Column(Float(), nullable=True)
+ 
 class PermissionGroup(NamedModel, Base):
     __tablename__ = "permissiongroup"
     
