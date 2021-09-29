@@ -45,7 +45,11 @@ def index():
 )
 def datastack_view(datastackname):
     datastack = DataStackService.get_datastack_by_name(datastackname)
-
+    resolution = [
+        datastack.viewer_resolution_x,
+        datastack.viewer_resolution_y,
+        datastack.viewer_resolution_z,
+    ]
     img_layer = ImageLayerConfig(
         name="img",
         source=datastack.aligned_volume.image_source,
@@ -60,7 +64,7 @@ def datastack_view(datastackname):
     ann_layer = AnnotationLayerConfig(name="ann")
 
     # setup a state builder with this layer pipeline
-    sb = StateBuilder([img_layer, seg_layer, ann_layer])
+    sb = StateBuilder([img_layer, seg_layer, ann_layer], resolution=resolution)
 
     if datastack.viewer_site is not None:
         site = datastack.viewer_site
