@@ -16,7 +16,7 @@ from middle_auth_client import (
     user_has_permission,
 )
 
-__version__ = "3.7.0"
+__version__ = "3.8.0"
 
 authorizations = {
     "apikey": {"type": "apiKey", "in": "query", "name": "middle_auth_token"}
