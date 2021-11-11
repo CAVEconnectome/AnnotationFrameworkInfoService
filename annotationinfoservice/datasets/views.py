@@ -18,7 +18,7 @@ from caveclient import CAVEclient
 import flask
 import os
 
-__version__ = "3.8.1"
+__version__ = "3.8.2"
 
 views_bp = Blueprint("datastacks", __name__, url_prefix="/datastacks")
 
