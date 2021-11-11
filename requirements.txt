@@ -14,3 +14,4 @@ geoalchemy2
 flask-wtf
 nglui==2.1.1
 middle-auth-client>=3.8.1
+Flask-Migrate
