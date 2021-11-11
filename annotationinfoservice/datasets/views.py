@@ -14,10 +14,11 @@ from middle_auth_client import (
     user_has_permission,
     auth_requires_permission,
 )
+from caveclient import CAVEclient
 import flask
 import os
 
-__version__ = "3.6.0"
+__version__ = "3.8.1"
 
 views_bp = Blueprint("datastacks", __name__, url_prefix="/datastacks")
 
@@ -45,6 +46,20 @@ def index():
 )
 def datastack_view(datastackname):
     datastack = DataStackService.get_datastack_by_name(datastackname)
+    if datastack.viewer_resolution_x is not None:
+        resolution = [
+            datastack.viewer_resolution_x,
+            datastack.viewer_resolution_y,
+            datastack.viewer_resolution_z,
+        ]
+    else:
+        resolution = [4, 4, 40]
+
+    if datastack.base_link_id is not None:
+        client = CAVEclient(auth_token=current_app.config.get('AUTH_TOKEN', None))
+        base_state = client.state.get_state_json(datastack.base_link_id)
+    else:
+        base_state = None
 
     img_layer = ImageLayerConfig(
         name="img",
@@ -60,7 +75,9 @@ def datastack_view(datastackname):
     ann_layer = AnnotationLayerConfig(name="ann")
 
     # setup a state builder with this layer pipeline
-    sb = StateBuilder([img_layer, seg_layer, ann_layer])
+    sb = StateBuilder(
+        [img_layer, seg_layer, ann_layer], base_state=base_state, resolution=resolution
+    )
 
     if datastack.viewer_site is not None:
         site = datastack.viewer_site

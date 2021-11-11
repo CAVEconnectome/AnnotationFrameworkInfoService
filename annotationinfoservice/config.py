@@ -2,6 +2,7 @@
 import os
 from flask_sqlalchemy import SQLAlchemy
 from annotationinfoservice.datasets.models import Base
+import json
 
 
 class BaseConfig(object):
@@ -10,7 +11,7 @@ class BaseConfig(object):
     DEBUG = True
     # Define the database - we are working with
     # SQLite for this example
-    SQLALCHEMY_DATABASE_URI = 'postgres://postgres:postgres@localhost:5432/datasets'
+    SQLALCHEMY_DATABASE_URI = "postgres://postgres:postgres@localhost:5432/datasets"
 
     DATABASE_CONNECT_OPTIONS = {}
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -28,29 +29,35 @@ class BaseConfig(object):
     CSRF_SESSION_KEY = "SECRETSESSION"
 
     # Secret key for signing cookies
-    SECRET_KEY = b'SECRETKEY'
+    SECRET_KEY = b"SECRETKEY"
 
     NEUROGLANCER_URL = "https://neuroglancer-demo.appspot.com"
+    if os.environ.get("DAF_CREDENTIALS", None) is not None:
+        with open(os.environ.get("DAF_CREDENTIALS"), "r") as f:
+            AUTH_TOKEN = json.load(f)["token"]
+    else:
+        AUTH_TOKEN = ""
 
 
 config = {
     "development": "annotationinfoservice.config.BaseConfig",
     "testing": "annotationinfoservice.config.BaseConfig",
-    "default": "annotationinfoservice.config.BaseConfig"
+    "default": "annotationinfoservice.config.BaseConfig",
 }
 
 
 def configure_app(app):
-    config_name = os.getenv('FLASK_CONFIGURATION', 'default')
+    config_name = os.getenv("FLASK_CONFIGURATION", "default")
     # object-based default configuration
     app.config.from_object(config[config_name])
-    if os.environ.get('ANNOTATIONINFOSERVICE_SETTINGS', None) is not None:
-        app.config.from_envvar('ANNOTATIONINFOSERVICE_SETTINGS')
+    if os.environ.get("ANNOTATIONINFOSERVICE_SETTINGS", None) is not None:
+        app.config.from_envvar("ANNOTATIONINFOSERVICE_SETTINGS")
     else:
         # instance-folders configuration
-        app.config.from_pyfile('config.cfg', silent=True)
+        app.config.from_pyfile("config.cfg", silent=True)
     db = SQLAlchemy(model_class=Base)
     from .datasets.schemas import ma
+
     db.init_app(app)
     ma.init_app(app)
     return app
