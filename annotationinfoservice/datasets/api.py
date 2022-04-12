@@ -14,7 +14,7 @@ from middle_auth_client import (
     user_has_permission,
 )
 
-__version__ = "3.9.2"
+__version__ = "4.0.0"
 
 
 authorizations = {
