@@ -6,9 +6,11 @@ from middle_auth_client import auth_requires_admin, auth_required
 from flask import redirect, url_for, request, g
 
 class SuperAdminView(ModelView):
-     @auth_required
      def is_accessible(self):
-        return g.auth_user['admin']
+        @auth_required
+        def helper():
+          return True
+        return helper() and g.get('auth_user', {}).get('admin', False)
                
      def inaccessible_callback(self, name, **kwargs):
         # redirect to login page if user doesn't have access
