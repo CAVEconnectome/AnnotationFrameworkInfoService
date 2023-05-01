@@ -12,7 +12,7 @@ flask-accepts
 psycopg2-binary
 geoalchemy2
 flask-wtf
-nglui==2.1.1
+nglui==2.14.0
 middle-auth-client>=3.16.0
 Flask-Migrate
 caveclient==5.4.0
