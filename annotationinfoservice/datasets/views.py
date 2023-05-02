@@ -58,7 +58,7 @@ def datastack_view(datastackname):
         resolution = [4, 4, 40]
 
     client = CAVEclient(
-        datastackname, auth_token=current_app.config.get("AUTH_TOKEN", None)
+        datastackname, auth_token=g.auth_token
     )
     if datastack.base_link_id is not None:
 
