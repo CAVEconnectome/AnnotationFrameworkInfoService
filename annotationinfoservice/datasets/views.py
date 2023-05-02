@@ -18,7 +18,7 @@ from middle_auth_client import (
 from caveclient import CAVEclient
 import flask
 import os
-
+import numpy as np
 
 __version__ = "3.10.1"
 
@@ -57,9 +57,7 @@ def datastack_view(datastackname):
     else:
         resolution = [4, 4, 40]
 
-    client = CAVEclient(
-        datastackname, auth_token=g.auth_token
-    )
+    client = CAVEclient(datastackname, auth_token=g.auth_token)
     if datastack.base_link_id is not None:
 
         base_state = client.state.get_state_json(datastack.base_link_id)
@@ -106,6 +104,23 @@ def datastack_view(datastackname):
         site = datastack.viewer_site
     else:
         site = current_app.config["NEUROGLANCER_URL"]
+    scaling = (
+        np.array(client.chunkedgraph.segmentation_info["scales"][0]["resolution"])
+        / client.info.viewer_resolution()
+    )
+
+    ctr = (
+        np.array(client.chunkedgraph.segmentation_info["scales"][0]["voxel_offset"])
+        * scaling
+        + np.array(client.chunkedgraph.segmentation_info["scales"][0]["size"])
+        * scaling
+        / 2
+    )
+    viewer_resolution = client.info.viewer_resolution()
+    spelunker_state["dimensions"]["x"][0] = float(viewer_resolution[0]) 
+    spelunker_state["dimensions"]["y"][0] = float(viewer_resolution[1]) 
+    spelunker_state["dimensions"]["z"][0] = float(viewer_resolution[2]) 
+    spelunker_state["position"] = ctr.tolist()
     spelunker_state["layers"][0]["source"] = datastack.aligned_volume.image_source
     spelunker_state["layers"][1]["source"] = new_source
 

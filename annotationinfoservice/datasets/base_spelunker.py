@@ -1,6 +1,13 @@
 spelunker_state = {
-    "dimensions": {"x": [4e-9, "m"], "y": [4e-9, "m"], "z": [4e-8, "m"]},
+    "dimensions": {"x": [4e-9, "nm"], "y": [4e-9, "nm"], "z": [4e-8, "nm"]},
     "crossSectionScale": 0.5,
+    "projectionOrientation": [
+        -0.5596503019332886,
+        0.16869042813777924,
+        0.09972338378429413,
+        0.8052268624305725,
+    ],
+    "projectionScale": 1339591.339963096,
     "layers": [
         {
             "type": "image",
@@ -12,7 +19,16 @@ spelunker_state = {
         {"type": "segmentation", "source": "", "tab": "source", "name": "seg"},
         {
             "type": "annotation",
-            "source": "local://annotations",
+            "source": {
+                "url": "local://annotations",
+                "transform": {
+                    "outputDimensions": {
+                        "x": [4e-9, "m"],
+                        "y": [4e-9, "m"],
+                        "z": [4e-8, "m"],
+                    }
+                },
+            },
             "tab": "source",
             "annotations": [],
             "name": "ann",
