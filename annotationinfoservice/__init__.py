@@ -13,7 +13,7 @@ from flask_migrate import Migrate
 from werkzeug.middleware.proxy_fix import ProxyFix
 from middle_auth_client import auth_required
 
-__version__ = "3.10.1"
+__version__ = "3.11.3"
 
 db = SQLAlchemy(model_class=Base)
 migrate = Migrate()
