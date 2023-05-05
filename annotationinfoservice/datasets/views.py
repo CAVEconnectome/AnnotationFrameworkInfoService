@@ -117,18 +117,22 @@ def datastack_view(datastackname):
         / 2
     )
     viewer_resolution = client.info.viewer_resolution()
-    spelunker_state["dimensions"]["x"][0] = float(viewer_resolution[0]) 
-    spelunker_state["dimensions"]["y"][0] = float(viewer_resolution[1]) 
-    spelunker_state["dimensions"]["z"][0] = float(viewer_resolution[2]) 
+    spelunker_state["dimensions"]["x"][0] = float(viewer_resolution[0])
+    spelunker_state["dimensions"]["y"][0] = float(viewer_resolution[1])
+    spelunker_state["dimensions"]["z"][0] = float(viewer_resolution[2])
     spelunker_state["position"] = ctr.tolist()
     spelunker_state["layers"][0]["source"] = datastack.aligned_volume.image_source
     spelunker_state["layers"][1]["source"] = new_source
 
-    site2 = "https://spelunker-dot-seung-lab.appspot.com/"
+    cave_site = "https://ngl.cave-explorer.org/"
     state_id = client.state.upload_state_json(spelunker_state)
-    ng_url2 = client.state.build_neuroglancer_url(state_id, site2).replace(
-        "/?json_url=", "#!middleauth+"
-    )
+    cave_explorer_url = client.state.build_neuroglancer_url(
+        state_id, cave_site
+    ).replace("/?json_url=", "#!middleauth+")
+    spelunker_site = "https://spelunker.cave-explorer.org/"
+    spelunker_url = client.state.build_neuroglancer_url(
+        state_id, spelunker_site
+    ).replace("/?json_url=", "#!middleauth+")
 
     ng_url = sb.render_state(return_as="url", url_prefix=site)
 
@@ -137,6 +141,7 @@ def datastack_view(datastackname):
         datastack=datastack,
         is_admin=g.auth_user["admin"],
         ng_url=ng_url,
-        ng_url2=ng_url2,
+        cave_explorer_url=cave_explorer_url,
+        spelunker_url=spelunker_url,
         version=__version__,
     )
