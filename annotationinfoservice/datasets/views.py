@@ -114,7 +114,11 @@ def datastack_view(datastackname):
     )
 
     ctr = (
-        np.array(client.chunkedgraph.segmentation_info["scales"][0]["voxel_offset"])
+        np.array(
+            client.chunkedgraph.segmentation_info["scales"][0].get(
+                "voxel_offset", [0, 0, 0]
+            )
+        )
         * scaling
         + np.array(client.chunkedgraph.segmentation_info["scales"][0]["size"])
         * scaling
