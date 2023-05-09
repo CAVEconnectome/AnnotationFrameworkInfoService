@@ -57,7 +57,11 @@ def datastack_view(datastackname):
     else:
         resolution = [4, 4, 40]
 
-    client = CAVEclient(datastackname, auth_token=g.auth_token)
+    client = CAVEclient(
+        datastackname,
+        auth_token=g.auth_token,
+        server_address=os.environ.get("GLOBAL_SERVER", None),
+    )
     if datastack.base_link_id is not None:
 
         base_state = client.state.get_state_json(datastack.base_link_id)
