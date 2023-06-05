@@ -4,6 +4,7 @@ from annotationinfoservice.datasets.models import (
     PermissionGroup,
     TableMapping,
     AlignedVolume,
+    ImageSource
 )
 from annotationinfoservice.datasets.schemas import (
     DataStackSchema,
@@ -25,6 +26,16 @@ class AlignedVolumeService:
     @staticmethod
     def get_aligned_volume_by_id(id: int) -> AlignedVolume:
         return AlignedVolume.query.filter_by(id=id).first_or_404()
+
+class ImageSourceService:
+    @staticmethod
+    def get_all() -> List[ImageSource]:
+        return ImageSource.query.all()
+    
+    @staticmethod
+    def get_image_sources_by_av(aligned_volume_id: id) -> List[ImageSource]:
+        return ImageSource.query.filter_by(aligned_volume_id=aligned_volume_id).all()
+    
 
 
 class DataStackService:

@@ -29,6 +29,15 @@ class DataSet(NamedModel, Base):
     analysis_database_ip = Column(String(100), nullable=True)
 
 
+class ImageSource(NamedModel, Base):
+    __tablename__ = "image_source"
+    ngl_layer_name = Column(String(100), nullable=True)
+    image_source = Column(String(200), nullable=False)
+    description = Column(String(500), nullable=True)
+    aligned_volume_id = Column(Integer, ForeignKey("aligned_volume.id"))
+    aligned_volume = relationship("AlignedVolume")
+
+
 class AlignedVolume(NamedModel, Base):
     __tablename__ = "aligned_volume"
     description = Column(String(500), nullable=True)
