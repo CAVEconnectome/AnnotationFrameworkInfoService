@@ -31,7 +31,7 @@ class DataSet(NamedModel, Base):
 
 class ImageSource(NamedModel, Base):
     __tablename__ = "image_source"
-    ngl_layer_name = Column(String(100), nullable=True)
+    viewer_layer_name = Column(String(100), nullable=True)
     image_source = Column(String(200), nullable=False)
     description = Column(String(500), nullable=True)
     aligned_volume_id = Column(Integer, ForeignKey("aligned_volume.id"))
@@ -40,6 +40,7 @@ class ImageSource(NamedModel, Base):
 
 class AlignedVolume(NamedModel, Base):
     __tablename__ = "aligned_volume"
+    display_name = Column(String(100), nullable=True)
     description = Column(String(500), nullable=True)
     image_source = Column(String(200), nullable=False)
     # base_resolution = Column(ARRAY(Integer,dimensions=1))
@@ -49,6 +50,8 @@ class AlignedVolume(NamedModel, Base):
 
 class DataStack(NamedModel, Base):
     __tablename__ = "datastack"
+    display_name = Column(String(100), nullable=True)
+    viewer_layer_name = Column(String(100), nullable=True)
     aligned_volume_id = Column(Integer, ForeignKey("aligned_volume.id"))
     aligned_volume = relationship("AlignedVolume")
     segmentation_source = Column(String(200), nullable=True)

@@ -8,6 +8,7 @@ from annotationinfoservice.datasets.service import (
     TableMappingService,
     PermissionGroupService,
     AlignedVolumeService,
+    ImageSourceService,
 )
 from typing import List
 from middle_auth_client import (
@@ -26,6 +27,75 @@ authorizations = {
 api_bp = Namespace(
     "Annotation Infoservice", authorizations=authorizations, description="Infoservice"
 )
+
+
+@api_bp.route("/ngl_info")
+@api_bp.doc("get ngl_info", security="apikey")
+class NGLInfoResource(Resource):
+    """NGL Info. Get all the information about what datasets a user has access to
+    for ngl_extend e to configure itself"""
+
+    @auth_required
+    def get(self) -> List:
+        """Get all NGL Info"""
+        aligned_vols = [
+            a
+            for a in AlignedVolumeService.get_all()
+            if user_has_permission("view", a.name, "aligned_volume")
+        ]
+        datastacks = {}
+        image_sources = {}
+        return_json = {}
+        for av in aligned_vols:
+            datastacks = DataStackService.get_datastacks_by_aligned_volume_id(av.id)
+            datastacks = [
+                d
+                for d in datastacks
+                if user_has_permission("view", d.name, "datastack")
+            ]
+
+            image_sources = ImageSourceService.get_image_sources_by_av(av.id)
+            if len(image_sources) == 0:
+                base_source = {
+                    "image_source": av.image_source,
+                    "ngl_image_name": "img",
+                    "name": av.name,
+                    "description": av.description,
+                }
+
+                image_layers = [base_source]
+            else:
+                image_layers = []
+                for img_src in image_sources:
+                    if img_src.image_source != av.image_source:
+                        image_layers.append(
+                            {
+                                "image_source": img_src.image_source,
+                                "ngl_image_name": img_src.name,
+                                "name": img_src.name,
+                                "description": img_src.description,
+                            }
+                        )
+
+            segmentation_layers = []
+            for datastack in datastacks:
+                segmentation_layers.append(
+                    {
+                        "name": datastack.name,
+                        "description": datastack.description,
+                        "segmentation_source": datastack.segmentation_source,
+                    }
+                )
+            if av.display_name is not None:
+                name = av.display_name
+            else:
+                name = av.name
+            return_json[name] = {
+                "image_layers": image_layers,
+                "segmentation_layers": segmentation_layers,
+            }
+
+        return return_json
 
 
 @api_bp.route("/aligned_volume")

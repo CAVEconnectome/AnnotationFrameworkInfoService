@@ -41,7 +41,6 @@ def index():
         version=__version__,
     )
 
-
 @views_bp.route("/datastack/<datastackname>")
 @auth_requires_permission(
     "view", table_arg="datastackname", resource_namespace="datastack"
