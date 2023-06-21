@@ -78,14 +78,14 @@ class NGLInfoResource(Resource):
 
             segmentation_layers = []
             for datastack in datastacks:
-                segmentation_layers.append(
-                    {
+                d = {
                         "name": datastack.name,
                         "description": datastack.description,
-                        "segmentation_source": datastack.segmentation_source,
-                        "initial_state_id": datastack.base_link_id,
+                        "segmentation_source": datastack.segmentation_source
                     }
-                )
+                if datastack.base_link_id is not None:
+                    d["initial_state_id"] = datastack.base_link_id 
+                segmentation_layers.append(d)
             if av.display_name is not None:
                 name = av.display_name
             else:
