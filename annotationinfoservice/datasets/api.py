@@ -67,7 +67,6 @@ class NGLInfoResource(Resource):
             else:
                 image_layers = []
                 for img_src in image_sources:
-                    if img_src.image_source != av.image_source:
                         image_layers.append(
                             {
                                 "image_source": img_src.image_source,
@@ -93,6 +92,7 @@ class NGLInfoResource(Resource):
             return_json[name] = {
                 "image_layers": image_layers,
                 "segmentation_layers": segmentation_layers,
+                "description": av.description
             }
 
         return return_json
