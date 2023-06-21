@@ -67,14 +67,14 @@ class NGLInfoResource(Resource):
             else:
                 image_layers = []
                 for img_src in image_sources:
-                        image_layers.append(
-                            {
-                                "image_source": img_src.image_source,
-                                "ngl_image_name": img_src.name,
-                                "name": img_src.name,
-                                "description": img_src.description,
-                            }
-                        )
+                    image_layers.append(
+                        {
+                            "image_source": img_src.image_source,
+                            "ngl_image_name": img_src.name,
+                            "name": img_src.name,
+                            "description": img_src.description,
+                        }
+                    )
 
             segmentation_layers = []
             for datastack in datastacks:
@@ -83,6 +83,7 @@ class NGLInfoResource(Resource):
                         "name": datastack.name,
                         "description": datastack.description,
                         "segmentation_source": datastack.segmentation_source,
+                        "initial_state_id": datastack.base_link_id,
                     }
                 )
             if av.display_name is not None:
@@ -92,7 +93,7 @@ class NGLInfoResource(Resource):
             return_json[name] = {
                 "image_layers": image_layers,
                 "segmentation_layers": segmentation_layers,
-                "description": av.description
+                "description": av.description,
             }
 
         return return_json
