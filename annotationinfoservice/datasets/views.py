@@ -20,7 +20,7 @@ import flask
 import os
 import numpy as np
 
-__version__ = "3.14.0"
+__version__ = "3.15.0"
 
 views_bp = Blueprint("datastacks", __name__, url_prefix="/datastacks")
 
