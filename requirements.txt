@@ -5,6 +5,7 @@ sqlalchemy==1.3.24
 flask-sqlalchemy
 marshmallow>=3.0.0
 marshmallow-sqlalchemy==0.22.0
+flask-cors
 flask-marshmallow
 flask-admin
 flask-restx

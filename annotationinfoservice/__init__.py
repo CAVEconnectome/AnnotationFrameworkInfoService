@@ -7,6 +7,7 @@ from annotationinfoservice.datasets.views import views_bp
 from annotationinfoservice.admin import setup_admin  # noQA: E402
 from flask_sqlalchemy import SQLAlchemy
 from flask_restx import Api
+from flask_cors import CORS
 import logging
 from flask_migrate import Migrate
 
@@ -34,6 +35,7 @@ def create_app(test_config=None):
         static_url_path="/info/static",
         static_folder="../static",
     )
+    CORS(app, expose_headers="WWW-Authenticate")
     # app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_port=1, x_for=1, x_host=1, x_prefix=1)
     # app.wsgi_app = ReverseProxied(app.wsgi_app)
     logging.basicConfig(level=logging.DEBUG)
