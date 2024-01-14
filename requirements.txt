@@ -1,5 +1,3 @@
-numpy
-pandas
 Flask
 sqlalchemy==1.3.24
 flask-sqlalchemy
