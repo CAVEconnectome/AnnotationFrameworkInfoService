@@ -10,7 +10,6 @@ flask-admin
 flask-restx
 flask-accepts
 psycopg2-binary
-flask-wtf
 nglui==2.1.1
 middle-auth-client>=3.11.0
 Flask-Migrate
