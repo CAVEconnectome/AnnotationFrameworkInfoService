@@ -41,6 +41,7 @@ def index():
         version=__version__,
     )
 
+
 @views_bp.route("/datastack/<datastackname>")
 @auth_requires_permission(
     "view", table_arg="datastackname", resource_namespace="datastack"
@@ -62,7 +63,6 @@ def datastack_view(datastackname):
         server_address=os.environ.get("GLOBAL_SERVER", None),
     )
     if datastack.base_link_id is not None:
-
         base_state = client.state.get_state_json(datastack.base_link_id)
     else:
         base_state = None
@@ -128,7 +128,15 @@ def datastack_view(datastackname):
     spelunker_state["dimensions"]["y"][0] = float(viewer_resolution[1])
     spelunker_state["dimensions"]["z"][0] = float(viewer_resolution[2])
     spelunker_state["position"] = ctr.tolist()
-    spelunker_state["layers"][0]["source"] = datastack.aligned_volume.image_source
+    spelunker_image_source = datastack.aligned_volume.image_source
+    if spelunker_image_source.startswith("graphene://"):
+        spelunker_image_source = spelunker_image_source.replace(
+            "https://", "middleauth+https://"
+        )
+        spelunker_image_source = spelunker_image_source.replace(
+            "graphene://", "precomputed://"
+        )
+    spelunker_state["layers"][0]["source"] = spelunker_image_source
     spelunker_state["layers"][1]["source"] = new_source
 
     cave_site = "https://ngl.cave-explorer.org/"
