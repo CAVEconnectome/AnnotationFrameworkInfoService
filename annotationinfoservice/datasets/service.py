@@ -23,6 +23,16 @@ class AlignedVolumeService:
         return AlignedVolume.query.filter_by(id=id).first_or_404()
 
 
+class ImageSourceService:
+    @staticmethod
+    def get_all() -> List[ImageSource]:
+        return ImageSource.query.all()
+
+    @staticmethod
+    def get_image_sources_by_av(aligned_volume_id: id) -> List[ImageSource]:
+        return ImageSource.query.filter_by(aligned_volume_id=aligned_volume_id).all()
+
+
 class DataStackService:
     @staticmethod
     def get_all() -> List[DataStack]:

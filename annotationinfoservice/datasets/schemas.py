@@ -31,3 +31,6 @@ class DataStackSchemaFull(marshmallow.Schema):
     viewer_resolution_x = marshmallow.fields.Float()
     viewer_resolution_y = marshmallow.fields.Float()
     viewer_resolution_z = marshmallow.fields.Float()
+    proofreading_status_table = marshmallow.fields.String()
+    cell_identification_table = marshmallow.fields.String()
+    proofreading_review_table = marshmallow.fields.String()
