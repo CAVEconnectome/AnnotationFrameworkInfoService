@@ -1,8 +1,5 @@
 from typing import List
-from annotationinfoservice.datasets.models import (
-    DataStack,
-    AlignedVolume,
-)
+from annotationinfoservice.datasets.models import DataStack, AlignedVolume, ImageSource
 from annotationinfoservice.datasets.schemas import (
     DataStackSchema,
     AlignedVolumeSchema,
