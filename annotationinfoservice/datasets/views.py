@@ -30,7 +30,9 @@ views_bp = Blueprint("datastacks", __name__, url_prefix="/datastacks")
 def index():
     datastacks = DataStackService.get_all()
     datastacks = [
-        d for d in datastacks if user_has_permission("view", d.name, "datastack")
+        d
+        for d in datastacks
+        if user_has_permission("view", d.name, "datastack", ignore_tos=True)
     ]
     return render_template(
         "datastacks.html",

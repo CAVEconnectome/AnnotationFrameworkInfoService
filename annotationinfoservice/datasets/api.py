@@ -39,7 +39,7 @@ class NGLInfoResource(Resource):
         aligned_vols = [
             a
             for a in AlignedVolumeService.get_all()
-            if user_has_permission("view", a.name, "aligned_volume")
+            if user_has_permission("view", a.name, "aligned_volume", ignore_tos=True)
         ]
         datastacks = {}
         image_sources = {}
@@ -49,7 +49,7 @@ class NGLInfoResource(Resource):
             datastacks = [
                 d
                 for d in datastacks
-                if user_has_permission("view", d.name, "datastack")
+                if user_has_permission("view", d.name, "datastack", ignore_tos=True)
             ]
 
             image_sources = ImageSourceService.get_image_sources_by_av(av.id)
@@ -108,7 +108,7 @@ class AlignedVolumeResource(Resource):
         aligned_vols = [
             a
             for a in AlignedVolumeService.get_all()
-            if user_has_permission("view", a.name, "aligned_volume")
+            if user_has_permission("view", a.name, "aligned_volume", ignore_tos=True)
         ]
 
         return [av["name"] for av in aligned_vols]
@@ -152,7 +152,11 @@ class DataStacksInAlignedVolumesResource(Resource):
         """Get DataStacks in an Aligned Volume by Name"""
         av = AlignedVolumeService.get_aligned_volume_by_name(aligned_volume_name)
         ds = DataStackService.get_datastacks_by_aligned_volume_id(av.id)
-        return [d.name for d in ds if user_has_permission("view", d.name, "datastack")]
+        return [
+            d.name
+            for d in ds
+            if user_has_permission("view", d.name, "datastack", ignore_tos=True)
+        ]
 
 
 @api_bp.route("/datastacks")
@@ -167,7 +171,9 @@ class DataStackResource(Resource):
         return [
             datastack["name"]
             for datastack in datastacks
-            if user_has_permission("view", datastack["name"], "datastack")
+            if user_has_permission(
+                "view", datastack["name"], "datastack", ignore_tos=True
+            )
         ]
 
 
@@ -179,7 +185,10 @@ class DataStackNameResource(Resource):
     @responds(schema=schemas.DataStackSchema)
     @api_bp.doc("get datastack", security="apikey")
     @auth_requires_permission(
-        "view", table_arg="datastack", resource_namespace="datastack"
+        required_permission="view",
+        table_arg="datastack",
+        resource_namespace="datastack",
+        ignore_tos=True,
     )
     def get(self, datastack: str) -> schemas.DataStackSchema:
         """Get DataStack By Name"""
