@@ -1,12 +1,6 @@
 from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.contrib.sqla import ModelView
-from annotationinfoservice.datasets.models import (
-    DataStack,
-    TableMapping,
-    PermissionGroup,
-    AlignedVolume,
-    ImageSource,
-)
+from annotationinfoservice.datasets.models import DataStack, AlignedVolume, ImageSource
 from middle_auth_client import auth_requires_admin, auth_required
 from flask import redirect, url_for, request, g
 
@@ -42,8 +36,6 @@ def setup_admin(app, db):
     )
     admin.add_view(SuperAdminView(AlignedVolume, db.session))
     admin.add_view(SuperAdminView(DataStack, db.session))
-    admin.add_view(SuperAdminView(PermissionGroup, db.session))
-    admin.add_view(SuperAdminView(TableMapping, db.session))
     admin.add_view(SuperAdminView(ImageSource, db.session))
 
     return admin

@@ -34,23 +34,3 @@ class DataStackSchemaFull(marshmallow.Schema):
     proofreading_status_table = marshmallow.fields.String()
     cell_identification_table = marshmallow.fields.String()
     proofreading_review_table = marshmallow.fields.String()
-
-
-class PermissionGroupSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = models.PermissionGroup
-
-
-class TableMappingSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = models.TableMapping
-
-    permissiongroup = ma.HyperlinkRelated(
-        "api.Annotation Infoservice_permission_group_id_resource", "id"
-    )
-
-
-class TableMappingFullSchema(marshmallow.Schema):
-    permission_group = marshmallow.fields.Nested(PermissionGroupSchema)
-    table_name = marshmallow.fields.String()
-    service_name = marshmallow.fields.String()

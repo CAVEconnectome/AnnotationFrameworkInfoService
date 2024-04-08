@@ -8,6 +8,8 @@ mod_datasets = Blueprint("datasets", __name__, url_prefix="/datasets")
 
 __version__ = "3.17.1"
 
+__version__ = "4.0.0"
+
 
 @mod_datasets.route("/")
 def index():

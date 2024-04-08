@@ -5,8 +5,6 @@ from flask_restx import Namespace, Resource
 from annotationinfoservice.datasets import schemas
 from annotationinfoservice.datasets.service import (
     DataStackService,
-    TableMappingService,
-    PermissionGroupService,
     AlignedVolumeService,
     ImageSourceService,
 )
@@ -17,7 +15,7 @@ from middle_auth_client import (
     user_has_permission,
 )
 
-__version__ = "3.17.1"
+__version__ = "4.0.0"
 
 
 authorizations = {
@@ -212,101 +210,3 @@ class DataStackNameFullResource(Resource):
         """Get DataStack By Name with AlignedVolume Details"""
         ds = DataStackService.get_datastack_by_name(datastack)
         return ds
-
-
-@api_bp.route("/permissiongroups")
-class PermissionGroupResource(Resource):
-    """Permission Groups"""
-
-    @api_bp.doc("get permission groups", security="apikey")
-    @auth_required
-    def get(self) -> List[str]:
-        """Get All Permissions Groups"""
-        pgs = PermissionGroupService.get_all()
-        return [pg.name for pg in pgs]
-
-
-@api_bp.route("/permissiongroup/name/<string:pg_name>")
-@api_bp.param("pg_name", "Permission Group Name")
-class PermissionGroupNameResource(Resource):
-    """Permission Group by Name"""
-
-    @responds(schema=schemas.PermissionGroupSchema)
-    @api_bp.doc("get permission group", security="apikey")
-    @auth_required
-    def get(self, pg_name: str) -> schemas.PermissionGroupSchema:
-        """Get Permissions Group by Name"""
-
-        return PermissionGroupService.get_permission_group_by_name(pg_name)
-
-
-@api_bp.route("/permissiongroup/id/<int:id>")
-@api_bp.param("id", "PermissionGroup Id")
-class PermissionGroupIdResource(Resource):
-    """PermissionGroup by Id"""
-
-    @api_bp.doc("get permissiongroup by id", security="apikey")
-    @responds(schema=schemas.PermissionGroupSchema)
-    @auth_required
-    def get(self, id: int) -> schemas.PermissionGroupSchema:
-        """Get Permission Group By Id"""
-        return PermissionGroupService.get_by_id(id)
-
-
-@api_bp.route("/tablemapping")
-class TableMappingResource(Resource):
-    """Table Mapping"""
-
-    @responds(schema=schemas.TableMappingFullSchema(many=True))
-    @api_bp.doc("get table mappings", security="apikey")
-    @auth_required
-    def get(self) -> schemas.TableMappingFullSchema:
-        """Get All Table Maps"""
-        return TableMappingService.get_all()
-
-
-@api_bp.route("/tablemapping/service/<string:service_name>")
-@api_bp.param("service_name", "Service Name")
-class TableMappingNameResource(Resource):
-    """Table Mapping by Service Name"""
-
-    @responds(schema=schemas.TableMappingSchema(many=True))
-    @api_bp.doc("get table mappings by service", security="apikey")
-    @auth_required
-    def get(self, service_name: str) -> schemas.TableMappingFullSchema:
-        """Get Table Mappings From Service"""
-        return TableMappingService.get_by_service(service_name)
-
-
-@api_bp.route("/tablemapping/service/<string:service_name>/table/<string:table_name>")
-@api_bp.param("service_name", "Service Name")
-@api_bp.param("table_name", "Table Name")
-class TableMappingGroupResource(Resource):
-    """Table Map Group by Service and Table Name"""
-
-    @responds(schema=schemas.TableMappingFullSchema)
-    @api_bp.doc("get table mapping group", security="apikey")
-    @auth_required
-    def get(self, service_name: str, table_name: str) -> schemas.TableMappingFullSchema:
-        """Get Table Map Group by Service and Table Name"""
-        table_map = TableMappingService.get_permission_group_from_table_and_service(
-            table_name, service_name
-        )
-        return table_map
-
-
-@api_bp.route(
-    "/tablemapping/service/<string:service_name>/table/<string:table_name>/permission_group"
-)
-@api_bp.param("service_name", "Service Name")
-@api_bp.param("table_name", "Table Name")
-class PermissionGroupForTableMappingResource(Resource):
-    """Get Permission Group for a Table Mapping by Service and Table Name"""
-
-    @api_bp.doc("get table mapping group", security="apikey")
-    def get(self, service_name: str, table_name: str) -> str:
-        """Get Permission Group of Table Map Group by Service and Table Name"""
-        table_map = TableMappingService.get_permission_group_from_table_and_service(
-            table_name, service_name
-        )
-        return table_map.permission_group.name
