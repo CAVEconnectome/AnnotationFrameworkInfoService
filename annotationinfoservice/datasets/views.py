@@ -138,8 +138,31 @@ def datastack_view(datastackname):
         spelunker_image_source = spelunker_image_source.replace(
             "graphene://", "precomputed://"
         )
+
     spelunker_state["layers"][0]["source"] = spelunker_image_source
     spelunker_state["layers"][1]["source"] = new_source
+
+    if datastack.skeleton_source is not None:
+        skeleton_source = datastack.skeleton_source.replace(
+            "precomputed://https://", "precomputed://middleauth+https://"
+        )
+        spelunker_state["layers"][1]["source"] = [
+            {
+                "url": new_source,
+                "subsources": {
+                    "default": True,
+                    "graph": True,
+                    "bounds": True,
+                    "mesh": True,
+                },
+                "enableDefaultSubsources": False,
+            },
+            {
+                "url": skeleton_source,
+                "subsources": {"default": True},
+                "enableDefaultSubsources": False,
+            },
+        ]
 
     cave_site = "https://ngl.cave-explorer.org/"
     state_id = client.state.upload_state_json(spelunker_state)
