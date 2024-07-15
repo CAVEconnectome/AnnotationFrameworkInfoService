@@ -79,12 +79,16 @@ class NGLInfoResource(Resource):
                 d = {
                     "name": datastack.name,
                     "description": datastack.description,
-                    "segmentation_source": datastack.segmentation_source,
+                    "segmentation_source": datastack.segmentation_source.replace(
+                        "graphene://https://", "graphene://middleauth+https://"
+                    ),
                 }
                 if datastack.base_link_id is not None:
                     d["initial_state_id"] = datastack.base_link_id
                 if datastack.skeleton_source is not None:
-                    d["skeleton_source"] = datastack.skeleton_source
+                    d["skeleton_source"] = datastack.skeleton_source.replace(
+                        "precomputed://https://", "precomputed://middleauth+https://"
+                    )
                 segmentation_layers.append(d)
             if av.display_name is not None:
                 name = av.display_name
