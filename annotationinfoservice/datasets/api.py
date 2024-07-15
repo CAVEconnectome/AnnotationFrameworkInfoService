@@ -83,6 +83,8 @@ class NGLInfoResource(Resource):
                 }
                 if datastack.base_link_id is not None:
                     d["initial_state_id"] = datastack.base_link_id
+                if datastack.skeleton_source is not None:
+                    d["skeleton_source"] = datastack.skeleton_source
                 segmentation_layers.append(d)
             if av.display_name is not None:
                 name = av.display_name

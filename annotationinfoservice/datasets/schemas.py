@@ -22,6 +22,7 @@ class DataStackSchema(ma.SQLAlchemyAutoSchema):
 class DataStackSchemaFull(marshmallow.Schema):
     aligned_volume = marshmallow.fields.Nested(AlignedVolumeSchema)
     segmentation_source = marshmallow.fields.String()
+    skeleton_source = marshmallow.fields.String()
     analysis_database = marshmallow.fields.String()
     viewer_site = marshmallow.fields.String()
     synapse_table = marshmallow.fields.String()
