@@ -50,7 +50,7 @@ flask-accepts==0.18.4
     # via -r requirements.in
 flask-admin==1.6.1
     # via -r requirements.in
-flask-cors==4.0.0
+flask-cors==4.0.1
     # via -r requirements.in
 flask-marshmallow==0.14.0
     # via -r requirements.in
