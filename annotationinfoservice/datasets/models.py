@@ -55,6 +55,7 @@ class DataStack(NamedModel, Base):
     aligned_volume_id = Column(Integer, ForeignKey("aligned_volume.id"))
     aligned_volume = relationship("AlignedVolume")
     segmentation_source = Column(String(200), nullable=True)
+    skeleton_source = Column(String(200), nullable=True)
     analysis_database = Column(String(100), nullable=True)
     viewer_site = Column(String(200), nullable=True)
     synapse_table = Column(String(100), nullable=True)
