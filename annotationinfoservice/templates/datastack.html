@@ -34,6 +34,13 @@
         Dash Apps</a>
     </td>
   </tr>
+  {% if datastack.skeleton_source is not none %}
+  <tr>
+    <td><a href="{{datastack.local_server}}/tourguide/app/datastack/{{datastack.name}}">
+        Tourguide</a>
+    </td>
+  </tr>
+  {% endif %}
   <tr>
     <td>
       <a href="/schema">
