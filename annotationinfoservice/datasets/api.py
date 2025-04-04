@@ -1,7 +1,7 @@
 # Import flask dependencies
 from flask import jsonify, render_template, current_app, make_response, Blueprint
 from flask_accepts import accepts, responds
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace, Resource, reqparse
 from annotationinfoservice.datasets import schemas
 from annotationinfoservice.datasets.service import (
     DataStackService,
@@ -15,7 +15,7 @@ from middle_auth_client import (
     user_has_permission,
 )
 
-__version__ = "4.2.1"
+__version__ = "4.3.0"
 
 
 authorizations = {
@@ -101,6 +101,23 @@ class NGLInfoResource(Resource):
             }
 
         return return_json
+
+
+@api_bp.route("/datastack/<datastack>/image_sources")
+@api_bp.param("datastack", "DataStack Name")
+class ImageSourceResource(Resource):
+    """Image Source by DataStack Name"""
+
+    @api_bp.doc("get image sources", security="apikey")
+    @responds(schema=schemas.ImageSourceSchema(many=True))
+    @auth_requires_permission(
+        "view", table_arg="datastack", resource_namespace="datastack"
+    )
+    def get(self, datastack: str) -> schemas.ImageSourceSchema:
+        """Get Image Sources By DataStack Name"""
+        ds = DataStackService.get_datastack_by_name(datastack)
+        image_sources = ImageSourceService.get_image_sources_by_av(ds.aligned_volume_id)
+        return image_sources
 
 
 @api_bp.route("/aligned_volume")
@@ -202,6 +219,16 @@ class DataStackNameResource(Resource):
         return DataStackService.get_datastack_by_name(datastack)
 
 
+datastack_info_parser = reqparse.RequestParser()
+datastack_info_parser.add_argument(
+    "image_source_name",
+    type=str,
+    required=False,
+    help="Aligned Volume Name",
+    location="args",
+)
+
+
 @api_bp.route("/datastack/full/<string:datastack>")
 @api_bp.param("datastack", "DataStack Name")
 class DataStackNameFullResource(Resource):
@@ -212,7 +239,14 @@ class DataStackNameFullResource(Resource):
     @auth_requires_permission(
         "view", table_arg="datastack", resource_namespace="datastack"
     )
+    @api_bp.expect(datastack_info_parser)
     def get(self, datastack: str) -> schemas.DataStackSchemaFull:
         """Get DataStack By Name with AlignedVolume Details"""
         ds = DataStackService.get_datastack_by_name(datastack)
+        args = datastack_info_parser.parse_args()
+        if args.get("image_source_name", None):
+            image_source = ImageSourceService.get_image_source_by_name(
+                ds.aligned_volume_id, args.get("image_source_name")
+            )
+            ds.aligned_volume.image_source = image_source.image_source
         return ds
