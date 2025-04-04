@@ -109,7 +109,7 @@ class ImageSourceResource(Resource):
     """Image Source by DataStack Name"""
 
     @api_bp.doc("get image sources", security="apikey")
-    @responds(schema=schemas.ImageSourceSchema, many=True)
+    @responds(schema=schemas.ImageSourceSchema(many=True))
     @auth_requires_permission(
         "view", table_arg="datastack", resource_namespace="datastack"
     )
@@ -239,6 +239,7 @@ class DataStackNameFullResource(Resource):
     @auth_requires_permission(
         "view", table_arg="datastack", resource_namespace="datastack"
     )
+    @api_bp.expect(datastack_info_parser)
     def get(self, datastack: str) -> schemas.DataStackSchemaFull:
         """Get DataStack By Name with AlignedVolume Details"""
         ds = DataStackService.get_datastack_by_name(datastack)
@@ -247,5 +248,5 @@ class DataStackNameFullResource(Resource):
             image_source = ImageSourceService.get_image_source_by_name(
                 ds.aligned_volume_id, args.get("image_source_name")
             )
-            ds.image_source = image_source.image_source
+            ds.aligned_volume.image_source = image_source.image_source
         return ds
