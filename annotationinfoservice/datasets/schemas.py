@@ -5,6 +5,11 @@ import marshmallow
 ma = Marshmallow()
 
 
+class ImageSourceSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = models.ImageSource
+
+
 class AlignedVolumeSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = models.AlignedVolume

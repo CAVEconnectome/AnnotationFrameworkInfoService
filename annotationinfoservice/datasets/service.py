@@ -29,6 +29,14 @@ class ImageSourceService:
     def get_image_sources_by_av(aligned_volume_id: id) -> List[ImageSource]:
         return ImageSource.query.filter_by(aligned_volume_id=aligned_volume_id).all()
 
+    @staticmethod
+    def get_image_source_by_name(aligned_volume_id: id, name: str) -> ImageSource:
+        return (
+            ImageSource.query.filter_by(aligned_volume_id=aligned_volume_id)
+            .filter_by(name=name)
+            .first_or_404()
+        )
+
 
 class DataStackService:
     @staticmethod
