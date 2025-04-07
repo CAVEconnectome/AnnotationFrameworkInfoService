@@ -27,16 +27,6 @@ api_bp = Namespace(
 )
 
 
-@api_bp.route("/version")
-@api_bp.doc("Get server version string")
-class VersionResource(Resource):
-    "Get version string"
-
-    def get(self) -> str:
-        "Get version string"
-        return jsonify(__version__)
-
-
 @api_bp.route("/ngl_info")
 @api_bp.doc("get ngl_info", security="apikey")
 class NGLInfoResource(Resource):
