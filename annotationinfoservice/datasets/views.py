@@ -44,6 +44,12 @@ def index():
     )
 
 
+@views_bp.route("/version")
+def get_version():
+    "Get version string"
+    return jsonify(__version__)
+
+
 @views_bp.route("/datastack/<datastackname>")
 @auth_requires_permission(
     "view", table_arg="datastackname", resource_namespace="datastack"
