@@ -112,7 +112,7 @@ marshmallow-sqlalchemy==0.22.0
     # via -r requirements.in
 matplotlib-inline==0.1.6
     # via ipython
-middle-auth-client==3.18.1
+middle-auth-client==3.19.2
     # via -r requirements.in
 networkx==3.2.1
     # via caveclient
