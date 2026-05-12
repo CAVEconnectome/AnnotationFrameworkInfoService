@@ -33,6 +33,7 @@ class DataStackSchemaFull(marshmallow.Schema):
     synapse_table = marshmallow.fields.String()
     soma_table = marshmallow.fields.String()
     local_server = marshmallow.fields.String()
+    catalog_url = marshmallow.fields.String()
     description = marshmallow.fields.String()
     viewer_resolution_x = marshmallow.fields.Float()
     viewer_resolution_y = marshmallow.fields.Float()

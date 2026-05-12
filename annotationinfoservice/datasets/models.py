@@ -64,6 +64,7 @@ class DataStack(NamedModel, Base):
     cell_identification_table = Column(String(100), nullable=True)
     proofreading_review_table = Column(String(100), nullable=True)
     local_server = Column(String(200), nullable=False)
+    catalog_url = Column(String(200), nullable=True)
     description = Column(String(500), nullable=True)
     viewer_resolution_x = Column(Float(), nullable=True)
     viewer_resolution_y = Column(Float(), nullable=True)
