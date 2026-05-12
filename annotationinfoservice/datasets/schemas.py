@@ -1,6 +1,7 @@
-import annotationinfoservice.datasets.models as models
-from flask_marshmallow import Marshmallow
 import marshmallow
+from flask_marshmallow import Marshmallow
+
+import annotationinfoservice.datasets.models as models
 
 ma = Marshmallow()
 
