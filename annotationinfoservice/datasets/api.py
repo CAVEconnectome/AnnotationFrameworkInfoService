@@ -1,8 +1,8 @@
 # Import flask dependencies
-from flask import jsonify, render_template, current_app, make_response, Blueprint
+from flask import jsonify, render_template, current_app, make_response, Blueprint, g
 from flask_accepts import accepts, responds
-from flask_restx import Namespace, Resource, reqparse
-from annotationinfoservice.datasets import schemas
+from flask_restx import Namespace, Resource, inputs, reqparse
+from annotationinfoservice.datasets import readiness, schemas
 from annotationinfoservice.datasets.service import (
     DataStackService,
     AlignedVolumeService,
@@ -11,6 +11,7 @@ from annotationinfoservice.datasets.service import (
 from typing import List
 from middle_auth_client import (
     auth_required,
+    auth_requires_admin,
     auth_requires_permission,
     user_has_permission,
 )
@@ -250,3 +251,28 @@ class DataStackNameFullResource(Resource):
             )
             ds.aligned_volume.image_source = image_source.image_source
         return ds
+
+
+readiness_parser = reqparse.RequestParser()
+readiness_parser.add_argument(
+    "refresh",
+    type=inputs.boolean,
+    default=False,
+    help="Re-run the checks instead of using the cached report",
+    location="args",
+)
+
+
+@api_bp.route("/datastack/<string:datastack>/readiness")
+@api_bp.param("datastack", "DataStack Name")
+class DataStackReadinessResource(Resource):
+    """Onboarding readiness of a datastack, aggregated across CAVE services"""
+
+    @api_bp.doc("get datastack readiness", security="apikey")
+    @auth_requires_admin
+    @api_bp.expect(readiness_parser)
+    def get(self, datastack: str):
+        """Get the readiness checklist for a datastack (global admins only)"""
+        args = readiness_parser.parse_args()
+        ds = readiness.snapshot(DataStackService.get_datastack_by_name(datastack))
+        return readiness.get_report(ds, g.auth_token, refresh=args["refresh"])

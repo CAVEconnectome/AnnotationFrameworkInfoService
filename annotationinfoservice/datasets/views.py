@@ -12,9 +12,11 @@ from nglui.statebuilder import (
 )
 from middle_auth_client import (
     auth_required,
+    auth_requires_admin,
     user_has_permission,
     auth_requires_permission,
 )
+from annotationinfoservice.datasets import readiness
 from caveclient import CAVEclient
 import flask
 import os
@@ -48,6 +50,42 @@ def index():
 def get_version():
     "Get version string"
     return jsonify(__version__)
+
+
+def _refresh_requested():
+    return flask.request.args.get("refresh", "false").lower() in ("1", "true", "yes")
+
+
+# Readiness pages are global-admin only: they expose bucket paths and auth configuration, and
+# they must work for datastacks whose auth mapping is still missing.
+@views_bp.route("/readiness")
+@auth_requires_admin
+def readiness_overview():
+    datastacks = [readiness.snapshot(d) for d in DataStackService.get_all()]
+    reports = readiness.get_reports(
+        datastacks, g.auth_token, refresh=_refresh_requested()
+    )
+    reports.sort(key=lambda r: r["datastack"])
+    return render_template(
+        "readiness_overview.html",
+        reports=reports,
+        steps=readiness.STEPS,
+        is_admin=True,
+        version=__version__,
+    )
+
+
+@views_bp.route("/datastack/<datastackname>/readiness")
+@auth_requires_admin
+def datastack_readiness(datastackname):
+    datastack = readiness.snapshot(DataStackService.get_datastack_by_name(datastackname))
+    report = readiness.get_report(datastack, g.auth_token, refresh=_refresh_requested())
+    return render_template(
+        "readiness.html",
+        report=report,
+        is_admin=True,
+        version=__version__,
+    )
 
 
 @views_bp.route("/datastack/<datastackname>")

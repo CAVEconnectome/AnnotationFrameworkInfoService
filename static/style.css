@@ -27,3 +27,26 @@ li a:hover {
 nav {
     color: white;
 }
+table.readiness {
+    border-collapse: collapse;
+}
+
+table.readiness th,
+table.readiness td {
+    border: 1px solid #ccc;
+    padding: 4px 8px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.status {
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: monospace;
+}
+
+.status-ok { background-color: #c8e6c9; }
+.status-warn { background-color: #fff3c4; }
+.status-fail { background-color: #ffcdd2; }
+.status-unknown { background-color: #e0e0e0; }
+.status-skip { color: #888; }

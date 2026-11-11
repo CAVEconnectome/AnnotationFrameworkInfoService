@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Datastack readiness{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<p><a href="?refresh=true">re-run all checks</a> (results are otherwise cached for a few minutes)</p>
+<table class="readiness">
+  <tr>
+    <th>Datastack</th><th>Overall</th>
+    {% for step in steps %}<th>{{step}}</th>{% endfor %}
+  </tr>
+  {% for report in reports %}
+  {% set by_step = {} %}
+  {% for s in report.steps %}{% set _ = by_step.update({s.step: s.status}) %}{% endfor %}
+  <tr>
+    <td><a href="{{url_for('datastacks.datastack_readiness', datastackname=report.datastack)}}">{{report.datastack}}</a></td>
+    <td><span class="status status-{{report.status}}">{{report.status}}</span></td>
+    {% for step in steps %}
+    {% set status = by_step.get(step, '') %}
+    <td>{% if status %}<span class="status status-{{status}}">{{status}}</span>{% else %}&ndash;{% endif %}</td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

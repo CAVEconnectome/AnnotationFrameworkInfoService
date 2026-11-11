@@ -15,6 +15,7 @@
 <a href={{spelunker_url}}>spelunker viewer [beta]</a><br>
 <a href="{{url_for('api.Annotation Infoservice_data_stack_name_full_resource', datastack=datastack.name)}}">api
   description</a>
+{% if is_admin %}<br><a href="{{url_for('datastacks.datastack_readiness', datastackname=datastack.name)}}">readiness</a>{% endif %}
 <p>
 <table>
   <tr>
