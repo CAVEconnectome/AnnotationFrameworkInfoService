@@ -1,8 +1,8 @@
 # Import flask dependencies
-from flask import jsonify, render_template, current_app, make_response, Blueprint
+from flask import jsonify, render_template, current_app, make_response, Blueprint, g
 from flask_accepts import accepts, responds
-from flask_restx import Namespace, Resource, reqparse
-from annotationinfoservice.datasets import schemas
+from flask_restx import Namespace, Resource, inputs, reqparse
+from annotationinfoservice.datasets import permissions, readiness, schemas
 from annotationinfoservice.datasets.service import (
     DataStackService,
     AlignedVolumeService,
@@ -11,8 +11,8 @@ from annotationinfoservice.datasets.service import (
 from typing import List
 from middle_auth_client import (
     auth_required,
+    auth_requires_admin,
     auth_requires_permission,
-    user_has_permission,
 )
 
 __version__ = "4.3.3"
@@ -36,21 +36,15 @@ class NGLInfoResource(Resource):
     @auth_required
     def get(self) -> List:
         """Get all NGL Info"""
-        aligned_vols = [
-            a
-            for a in AlignedVolumeService.get_all()
-            if user_has_permission("view", a.name, "aligned_volume", ignore_tos=True)
-        ]
+        aligned_vols = permissions.visible(
+            AlignedVolumeService.get_all(), "aligned_volume"
+        )
         datastacks = {}
         image_sources = {}
         return_json = {}
         for av in aligned_vols:
             datastacks = DataStackService.get_datastacks_by_aligned_volume_id(av.id)
-            datastacks = [
-                d
-                for d in datastacks
-                if user_has_permission("view", d.name, "datastack", ignore_tos=True)
-            ]
+            datastacks = permissions.visible(datastacks, "datastack")
 
             image_sources = ImageSourceService.get_image_sources_by_av(av.id)
             if len(image_sources) == 0:
@@ -100,7 +94,7 @@ class NGLInfoResource(Resource):
                 "description": av.description,
             }
 
-        return return_json
+        return return_json, 200, permissions.warning_headers()
 
 
 @api_bp.route("/datastack/<datastack>/image_sources")
@@ -128,13 +122,11 @@ class AlignedVolumeResource(Resource):
     @auth_required
     def get(self) -> List:
         """Get all Aligned Volumes"""
-        aligned_vols = [
-            a
-            for a in AlignedVolumeService.get_all()
-            if user_has_permission("view", a.name, "aligned_volume", ignore_tos=True)
-        ]
+        aligned_vols = permissions.visible(
+            AlignedVolumeService.get_all(), "aligned_volume"
+        )
 
-        return [av["name"] for av in aligned_vols]
+        return [av["name"] for av in aligned_vols], 200, permissions.warning_headers()
 
 
 @api_bp.route("/aligned_volume/id/<int:id>")
@@ -175,11 +167,8 @@ class DataStacksInAlignedVolumesResource(Resource):
         """Get DataStacks in an Aligned Volume by Name"""
         av = AlignedVolumeService.get_aligned_volume_by_name(aligned_volume_name)
         ds = DataStackService.get_datastacks_by_aligned_volume_id(av.id)
-        return [
-            d.name
-            for d in ds
-            if user_has_permission("view", d.name, "datastack", ignore_tos=True)
-        ]
+        names = [d.name for d in permissions.visible(ds, "datastack")]
+        return names, 200, permissions.warning_headers()
 
 
 @api_bp.route("/datastacks")
@@ -190,14 +179,11 @@ class DataStackResource(Resource):
     @auth_required
     def get(self) -> List:
         """Get all Datastacks"""
-        datastacks = DataStackService.get_all()
-        return [
-            datastack["name"]
-            for datastack in datastacks
-            if user_has_permission(
-                "view", datastack["name"], "datastack", ignore_tos=True
-            )
-        ]
+        datastacks = permissions.visible(
+            DataStackService.get_all(), "datastack", name=lambda d: d["name"]
+        )
+        names = [datastack["name"] for datastack in datastacks]
+        return names, 200, permissions.warning_headers()
 
 
 @api_bp.route("/datastack/<string:datastack>")
@@ -250,3 +236,28 @@ class DataStackNameFullResource(Resource):
             )
             ds.aligned_volume.image_source = image_source.image_source
         return ds
+
+
+readiness_parser = reqparse.RequestParser()
+readiness_parser.add_argument(
+    "refresh",
+    type=inputs.boolean,
+    default=False,
+    help="Re-run the checks instead of using the cached report",
+    location="args",
+)
+
+
+@api_bp.route("/datastack/<string:datastack>/readiness")
+@api_bp.param("datastack", "DataStack Name")
+class DataStackReadinessResource(Resource):
+    """Onboarding readiness of a datastack, aggregated across CAVE services"""
+
+    @api_bp.doc("get datastack readiness", security="apikey")
+    @auth_requires_admin
+    @api_bp.expect(readiness_parser)
+    def get(self, datastack: str):
+        """Get the readiness checklist for a datastack (global admins only)"""
+        args = readiness_parser.parse_args()
+        ds = readiness.snapshot(DataStackService.get_datastack_by_name(datastack))
+        return readiness.get_report(ds, g.auth_token, refresh=args["refresh"])

@@ -12,9 +12,10 @@ from nglui.statebuilder import (
 )
 from middle_auth_client import (
     auth_required,
-    user_has_permission,
+    auth_requires_admin,
     auth_requires_permission,
 )
+from annotationinfoservice.datasets import permissions, readiness
 from caveclient import CAVEclient
 import flask
 import os
@@ -28,15 +29,14 @@ views_bp = Blueprint("datastacks", __name__, url_prefix="/datastacks")
 @views_bp.route("/")
 @auth_required
 def index():
-    datastacks = DataStackService.get_all()
-    datastacks = [
-        d
-        for d in datastacks
-        if user_has_permission("view", d.name, "datastack", ignore_tos=True)
-    ]
+    datastacks = permissions.visible(
+        DataStackService.get_all(), "datastack", show_broken=True
+    )
     return render_template(
         "datastacks.html",
         datastacks=datastacks,
+        problems=permissions.problems(),
+        broken=permissions.broken("datastack"),
         is_admin=g.auth_user["admin"],
         user=g.auth_user["id"],
         logout_url=os.environ.get("STICKY_AUTH_URL", None) + "/api/v1/logout",
@@ -50,12 +50,79 @@ def get_version():
     return jsonify(__version__)
 
 
+def _refresh_requested():
+    return flask.request.args.get("refresh", "false").lower() in ("1", "true", "yes")
+
+
+# Readiness pages are global-admin only: they expose bucket paths and auth configuration, and
+# they must work for datastacks whose auth mapping is still missing.
+@views_bp.route("/readiness")
+@auth_requires_admin
+def readiness_overview():
+    datastacks = [readiness.snapshot(d) for d in DataStackService.get_all()]
+    reports = readiness.get_reports(
+        datastacks, g.auth_token, refresh=_refresh_requested()
+    )
+    reports.sort(key=lambda r: r["datastack"])
+    return render_template(
+        "readiness_overview.html",
+        reports=reports,
+        steps=readiness.STEPS,
+        is_admin=True,
+        version=__version__,
+    )
+
+
+@views_bp.route("/datastack/<datastackname>/readiness")
+@auth_requires_admin
+def datastack_readiness(datastackname):
+    datastack = readiness.snapshot(DataStackService.get_datastack_by_name(datastackname))
+    report = readiness.get_report(datastack, g.auth_token, refresh=_refresh_requested())
+    return render_template(
+        "readiness.html",
+        report=report,
+        is_admin=True,
+        version=__version__,
+    )
+
+
 @views_bp.route("/datastack/<datastackname>")
 @auth_requires_permission(
-    "view", table_arg="datastackname", resource_namespace="datastack"
+    "view",
+    table_arg="datastackname",
+    resource_namespace="datastack",
+    on_unmapped="admin_passthrough",
 )
 def datastack_view(datastackname):
     datastack = DataStackService.get_datastack_by_name(datastackname)
+    links, link_error = {}, None
+    try:
+        links = _viewer_links(datastack)
+    except Exception as e:
+        current_app.logger.exception(f"Failed to build viewer links for {datastackname}")
+        link_error = str(e)
+        if permissions.is_admin():
+            parsed = readiness.parse_segmentation_source(datastack.segmentation_source)
+            permissions.diagnose_datastack(datastack, parsed[1] if parsed else None)
+
+    return render_template(
+        "datastack.html",
+        datastack=datastack,
+        is_admin=g.auth_user["admin"],
+        link_error=link_error,
+        problems=permissions.problems(),
+        version=__version__,
+        **links,
+    )
+
+
+def _viewer_links(datastack):
+    """Viewer URLs for the datastack page.
+
+    Goes through CAVEclient, i.e. back through this info service and the PCG, so it fails whenever
+    the datastack or its PCG table is missing an auth mapping.
+    """
+    datastackname = datastack.name
     if datastack.viewer_resolution_x is not None:
         resolution = [
             datastack.viewer_resolution_x,
@@ -182,12 +249,8 @@ def datastack_view(datastackname):
 
     ng_url = sb.render_state(return_as="url", url_prefix=site)
 
-    return render_template(
-        "datastack.html",
-        datastack=datastack,
-        is_admin=g.auth_user["admin"],
+    return dict(
         ng_url=ng_url,
         cave_explorer_url=cave_explorer_url,
         spelunker_url=spelunker_url,
-        version=__version__,
     )

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Readiness: {{report.datastack}}{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<p>
+  Overall: <span class="status status-{{report.status}}">{{report.status}}</span>
+  &middot; checked {{report.checked_at}}
+  &middot; <a href="?refresh=true">re-run checks</a>
+  &middot; <a href="{{url_for('datastacks.readiness_overview')}}">all datastacks</a>
+</p>
+{% for step in report.steps %}
+<h3>{{step.step}} <span class="status status-{{step.status}}">{{step.status}}</span></h3>
+<table class="readiness">
+  <tr><th>Status</th><th>Service</th><th>Check</th><th>Detail</th><th>How to fix</th></tr>
+  {% for check in step.checks %}
+  <tr>
+    <td><span class="status status-{{check.status}}">{{check.status}}</span></td>
+    <td>{{check.service}}</td>
+    <td>{% if check.docs %}<a href="{{check.docs}}">{{check.id}}</a>{% else %}{{check.id}}{% endif %}</td>
+    <td>{{check.message}}</td>
+    <td>{{check.remediation}}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endfor %}
+{% endblock %}
