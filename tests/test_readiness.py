@@ -25,7 +25,7 @@ def make_datastack(**overrides):
         name="test_ds",
         segmentation_source=f"graphene://{PCG}/table/test_graph",
         local_server="https://local.example.org",
-        aligned_volume=SimpleNamespace(image_source="precomputed://gs://img-bucket/em"),
+        aligned_volume=SimpleNamespace(name="av", image_source="precomputed://gs://img-bucket/em"),
     )
     fields.update(overrides)
     return SimpleNamespace(**fields)
@@ -59,6 +59,7 @@ def routes(monkeypatch):
         f"{PCG}/table/test_graph/readiness": Resp(200, pcg_report()),
         "https://storage.googleapis.com/img-bucket/em/info": Resp(200, {}),
         f"https://{AUTH}/api/v1/service/datastack/table/test_ds/dataset": Resp(200, "minnie"),
+        f"https://{AUTH}/api/v1/service/aligned_volume/table/av/dataset": Resp(200, "minnie"),
         f"https://{AUTH}/api/v1/service/pychunkedgraph/table/test_graph/dataset": Resp(200, "minnie"),
     }
     seen_headers = []
@@ -180,3 +181,10 @@ def test_templates_parse():
     env = jinja2.Environment(loader=jinja2.FileSystemLoader(str(templates)))
     for name in ("readiness.html", "readiness_overview.html", "base.html", "datastack.html"):
         env.parse(env.loader.get_source(env, name)[0])
+
+
+def test_unmapped_aligned_volume(routes):
+    del routes[f"https://{AUTH}/api/v1/service/aligned_volume/table/av/dataset"]
+    check = checks_by_id(readiness.collect(make_datastack(), "tok"))["auth.aligned_volume.dataset_exists"]
+    assert check["status"] == "fail"
+    assert "(aligned_volume, av)" in check["remediation"]

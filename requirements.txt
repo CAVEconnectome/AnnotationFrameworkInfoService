@@ -112,7 +112,8 @@ marshmallow-sqlalchemy==0.22.0
     # via -r requirements.in
 matplotlib-inline==0.1.6
     # via ipython
-middle-auth-client==3.19.2
+# TODO: pin the release once CAVEconnectome/middle_auth_client#28 is merged
+middle-auth-client @ git+https://github.com/CAVEconnectome/middle_auth_client.git@table-mapping-errors
     # via -r requirements.in
 networkx==3.2.1
     # via caveclient

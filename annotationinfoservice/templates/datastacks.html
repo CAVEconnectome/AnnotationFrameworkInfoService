@@ -5,7 +5,9 @@
 {% endblock %}
 
 {% block content %}
+{% include '_permission_problems.html' %}
 {% for datastack in datastacks %}
-<p><a href="{{url_for('datastacks.datastack_view',datastackname=datastack.name)}}">{{datastack.name}}</a></p>
+<p><a href="{{url_for('datastacks.datastack_view',datastackname=datastack.name)}}">{{datastack.name}}</a>
+  {% if datastack.name in broken %}<span class="status status-fail">{% if broken[datastack.name] == 'unmapped' %}not mapped in middle_auth{% else %}auth lookup failed{% endif %}</span>{% endif %}</p>
 {% endfor %}
 {% endblock %}

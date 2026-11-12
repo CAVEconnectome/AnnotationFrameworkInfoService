@@ -13,10 +13,9 @@ from nglui.statebuilder import (
 from middle_auth_client import (
     auth_required,
     auth_requires_admin,
-    user_has_permission,
     auth_requires_permission,
 )
-from annotationinfoservice.datasets import readiness
+from annotationinfoservice.datasets import permissions, readiness
 from caveclient import CAVEclient
 import flask
 import os
@@ -30,15 +29,14 @@ views_bp = Blueprint("datastacks", __name__, url_prefix="/datastacks")
 @views_bp.route("/")
 @auth_required
 def index():
-    datastacks = DataStackService.get_all()
-    datastacks = [
-        d
-        for d in datastacks
-        if user_has_permission("view", d.name, "datastack", ignore_tos=True)
-    ]
+    datastacks = permissions.visible(
+        DataStackService.get_all(), "datastack", show_broken=True
+    )
     return render_template(
         "datastacks.html",
         datastacks=datastacks,
+        problems=permissions.problems(),
+        broken=permissions.broken("datastack"),
         is_admin=g.auth_user["admin"],
         user=g.auth_user["id"],
         logout_url=os.environ.get("STICKY_AUTH_URL", None) + "/api/v1/logout",
@@ -90,10 +88,41 @@ def datastack_readiness(datastackname):
 
 @views_bp.route("/datastack/<datastackname>")
 @auth_requires_permission(
-    "view", table_arg="datastackname", resource_namespace="datastack"
+    "view",
+    table_arg="datastackname",
+    resource_namespace="datastack",
+    on_unmapped="admin_passthrough",
 )
 def datastack_view(datastackname):
     datastack = DataStackService.get_datastack_by_name(datastackname)
+    links, link_error = {}, None
+    try:
+        links = _viewer_links(datastack)
+    except Exception as e:
+        current_app.logger.exception(f"Failed to build viewer links for {datastackname}")
+        link_error = str(e)
+        if permissions.is_admin():
+            parsed = readiness.parse_segmentation_source(datastack.segmentation_source)
+            permissions.diagnose_datastack(datastack, parsed[1] if parsed else None)
+
+    return render_template(
+        "datastack.html",
+        datastack=datastack,
+        is_admin=g.auth_user["admin"],
+        link_error=link_error,
+        problems=permissions.problems(),
+        version=__version__,
+        **links,
+    )
+
+
+def _viewer_links(datastack):
+    """Viewer URLs for the datastack page.
+
+    Goes through CAVEclient, i.e. back through this info service and the PCG, so it fails whenever
+    the datastack or its PCG table is missing an auth mapping.
+    """
+    datastackname = datastack.name
     if datastack.viewer_resolution_x is not None:
         resolution = [
             datastack.viewer_resolution_x,
@@ -220,12 +249,8 @@ def datastack_view(datastackname):
 
     ng_url = sb.render_state(return_as="url", url_prefix=site)
 
-    return render_template(
-        "datastack.html",
-        datastack=datastack,
-        is_admin=g.auth_user["admin"],
+    return dict(
         ng_url=ng_url,
         cave_explorer_url=cave_explorer_url,
         spelunker_url=spelunker_url,
-        version=__version__,
     )

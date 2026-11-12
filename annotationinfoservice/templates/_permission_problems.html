@@ -1,0 +1,16 @@
+{# Shown to global admins only: resources whose middle_auth mapping is missing or unresolvable. #}
+{% if is_admin and problems %}
+<div class="admin-warning">
+  <strong>Admin notice: auth configuration problems</strong>
+  <p>Regular users are treated as having no access to these until they are fixed.</p>
+  <ul class="problems">
+    {% for p in problems %}
+    <li>
+      {{p.message}}<br>
+      <em>Fix:</em> {{p.remediation}}
+      {% if p.readiness_url %}<a href="{{p.readiness_url}}">readiness checklist</a>{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}

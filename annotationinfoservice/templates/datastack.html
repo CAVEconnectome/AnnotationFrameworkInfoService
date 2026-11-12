@@ -10,9 +10,25 @@
 <h4>Description:</h4>
 {{datastack.description}}
 </p>
+{% include '_permission_problems.html' %}
+{% if link_error %}
+{% if is_admin %}
+<div class="admin-warning">
+  <strong>Admin notice: viewer links could not be built.</strong>
+  <p>{{link_error}}</p>
+  <p>Building them calls this info service and the PyChunkedGraph through CAVEclient, so a
+    missing datastack, aligned volume or PCG table mapping in middle_auth breaks them
+    {% if not problems %}(no missing mappings were found; the error above is the cause){% endif %}.
+    See the <a href="{{url_for('datastacks.datastack_readiness', datastackname=datastack.name)}}">readiness checklist</a>.</p>
+</div>
+{% else %}
+<p>Viewer links are temporarily unavailable for this datastack.</p>
+{% endif %}
+{% else %}
 <a href={{ng_url}}>viewer link</a><br>
 <a href={{cave_explorer_url}}>cave-explorer viewer</a><br>
 <a href={{spelunker_url}}>spelunker viewer [beta]</a><br>
+{% endif %}
 <a href="{{url_for('api.Annotation Infoservice_data_stack_name_full_resource', datastack=datastack.name)}}">api
   description</a>
 {% if is_admin %}<br><a href="{{url_for('datastacks.datastack_readiness', datastackname=datastack.name)}}">readiness</a>{% endif %}

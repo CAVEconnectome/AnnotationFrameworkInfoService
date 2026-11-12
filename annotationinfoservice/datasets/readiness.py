@@ -191,6 +191,29 @@ def lookup_dataset(namespace, table, token, auth_url=None):
     return None, f"auth server returned {resp.status_code}"
 
 
+def aligned_volume_check(aligned_volume_name, token, auth_url=None):
+    """ngl_info and the aligned volume APIs look this mapping up for every row."""
+    auth_url = auth_url or AUTH_URL
+    av_dataset, err = lookup_dataset("aligned_volume", aligned_volume_name, token, auth_url)
+    if err:
+        return _check("auth.aligned_volume.dataset_exists", "auth", FAIL, err)
+    if av_dataset is None:
+        return _check(
+            "auth.aligned_volume.dataset_exists",
+            "auth",
+            FAIL,
+            f"Aligned volume '{aligned_volume_name}' is not mapped to a dataset on {auth_url}",
+            f"Add a service table mapping (aligned_volume, {aligned_volume_name}) -> <dataset> "
+            "in middle_auth.",
+        )
+    return _check(
+        "auth.aligned_volume.dataset_exists",
+        "auth",
+        OK,
+        f"Aligned volume is in dataset '{av_dataset}'",
+    )
+
+
 def auth_checks(datastack_name, pcg_table, pcg_report, token, auth_url=None):
     auth_url = auth_url or AUTH_URL
     checks = []
@@ -303,7 +326,10 @@ def snapshot(datastack):
         name=datastack.name,
         segmentation_source=datastack.segmentation_source,
         local_server=datastack.local_server,
-        aligned_volume=SimpleNamespace(image_source=datastack.aligned_volume.image_source),
+        aligned_volume=SimpleNamespace(
+            name=datastack.aligned_volume.name,
+            image_source=datastack.aligned_volume.image_source,
+        ),
     )
 
 
@@ -375,6 +401,7 @@ def collect(datastack, token, auth_url=None):
             checks.extend(service_checks)
         checks.append(image.result())
 
+    checks.append(aligned_volume_check(datastack.aligned_volume.name, token, auth_url))
     checks.extend(
         auth_checks(
             datastack.name, pcg_table, reports.get("pychunkedgraph"), token, auth_url

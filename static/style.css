@@ -50,3 +50,10 @@ table.readiness td {
 .status-fail { background-color: #ffcdd2; }
 .status-unknown { background-color: #e0e0e0; }
 .status-skip { color: #888; }
+
+.admin-warning {
+    border: 1px solid #e57373;
+    background-color: #ffebee;
+    padding: 8px 12px;
+    margin: 8px 0;
+}
