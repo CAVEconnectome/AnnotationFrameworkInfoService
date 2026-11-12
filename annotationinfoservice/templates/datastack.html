@@ -13,13 +13,26 @@
 {% include '_permission_problems.html' %}
 {% if link_error %}
 {% if is_admin %}
-<div class="admin-warning">
-  <strong>Admin notice: viewer links could not be built.</strong>
-  <p>{{link_error}}</p>
-  <p>Building them calls this info service and the PyChunkedGraph through CAVEclient, so a
-    missing datastack, aligned volume or PCG table mapping in middle_auth breaks them
-    {% if not problems %}(no missing mappings were found; the error above is the cause){% endif %}.
-    See the <a href="{{url_for('datastacks.datastack_readiness', datastackname=datastack.name)}}">readiness checklist</a>.</p>
+<div class="admin-warning" role="alert">
+  <div class="admin-warning-title">Admin notice: viewer links could not be built</div>
+  <div class="admin-warning-subtitle">
+    {% if problems %}Likely cause: the auth configuration problems listed above.
+    {% else %}No missing auth mappings were found, so the error below is the cause.{% endif %}
+  </div>
+  <div class="problem">
+    <div class="problem-summary">
+      Viewer links are built through CAVEclient, which calls this info service and the
+      PyChunkedGraph. A missing datastack, aligned volume or PCG table mapping in middle_auth
+      breaks them.
+    </div>
+    <div class="problem-links">
+      <a href="{{url_for('datastacks.datastack_readiness', datastackname=datastack.name)}}">Open the readiness checklist &rarr;</a>
+    </div>
+    <details{% if not problems %} open{% endif %}>
+      <summary>Error details</summary>
+      <code>{{link_error}}</code>
+    </details>
+  </div>
 </div>
 {% else %}
 <p>Viewer links are temporarily unavailable for this datastack.</p>

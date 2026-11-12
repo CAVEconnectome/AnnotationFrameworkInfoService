@@ -1,4 +1,5 @@
-ul {
+/* Nav bar. Scoped to nav: page content uses lists too. */
+nav ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -6,12 +7,12 @@ ul {
     background-color: #333;
 }
 
-li {
+nav li {
     float: left;
     text-align: center;
 }
 
-li a {
+nav li a {
     display: block;
     color: white;
     text-align: center;
@@ -20,7 +21,7 @@ li a {
 }
 
 /* Change the link color to #111 (black) on hover */
-li a:hover {
+nav li a:hover {
     background-color: #111;
 }
 
@@ -51,9 +52,78 @@ table.readiness td {
 .status-unknown { background-color: #e0e0e0; }
 .status-skip { color: #888; }
 
+.content {
+    padding: 0 16px;
+}
+
+/* Admin-only notices about misconfiguration. */
 .admin-warning {
-    border: 1px solid #e57373;
-    background-color: #ffebee;
-    padding: 8px 12px;
-    margin: 8px 0;
+    max-width: 900px;
+    border: 1px solid #e0a3a3;
+    border-left: 6px solid #c62828;
+    border-radius: 4px;
+    background-color: #fff5f5;
+    padding: 12px 16px;
+    margin: 12px 0 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.45;
+    color: #222;
+}
+
+.admin-warning-title {
+    font-weight: 600;
+    font-size: 16px;
+    color: #b71c1c;
+}
+
+.admin-warning-subtitle {
+    margin: 2px 0 10px;
+    color: #555;
+}
+
+.problem {
+    background-color: white;
+    border: 1px solid #eed5d5;
+    border-radius: 4px;
+    padding: 10px 12px;
+    margin-top: 8px;
+}
+
+.problem-summary {
+    font-size: 15px;
+}
+
+.problem-fix {
+    margin-top: 4px;
+}
+
+.problem-fix-label {
+    font-weight: 600;
+}
+
+.problem-links {
+    margin-top: 6px;
+    font-size: 14px;
+}
+
+.problem details {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #666;
+}
+
+.problem details code {
+    display: block;
+    margin-top: 4px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.admin-warning code {
+    font-family: Menlo, Consolas, monospace;
+    font-size: 0.92em;
+    background-color: #f4f4f4;
+    padding: 1px 4px;
+    border-radius: 3px;
 }

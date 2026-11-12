@@ -1,16 +1,27 @@
-{# Shown to global admins only: resources whose middle_auth mapping is missing or unresolvable. #}
+{# Shown to global admins only: resources whose middle_auth dataset lookup failed. #}
 {% if is_admin and problems %}
-<div class="admin-warning">
-  <strong>Admin notice: auth configuration problems</strong>
-  <p>Regular users are treated as having no access to these until they are fixed.</p>
-  <ul class="problems">
-    {% for p in problems %}
-    <li>
-      {{p.message}}<br>
-      <em>Fix:</em> {{p.remediation}}
-      {% if p.readiness_url %}<a href="{{p.readiness_url}}">readiness checklist</a>{% endif %}
-    </li>
-    {% endfor %}
-  </ul>
+{% set labels = {"datastack": "Datastack", "aligned_volume": "Aligned volume", "pychunkedgraph": "PCG table"} %}
+{% set kinds = {"unmapped": "is not mapped to a dataset in middle_auth", "auth_unavailable": "could not be checked: the auth server did not respond"} %}
+<div class="admin-warning" role="alert">
+  <div class="admin-warning-title">
+    Admin notice: {{ problems|length }} auth configuration problem{{ "s" if problems|length != 1 }}
+  </div>
+  <div class="admin-warning-subtitle">Regular users can't see or use these until they're fixed.</div>
+  {% for p in problems %}
+  <div class="problem">
+    <div class="problem-summary">
+      {{ labels.get(p.namespace, p.namespace) }} <code>{{ p.table_id }}</code>
+      {{ kinds.get(p.kind, "could not be resolved to a dataset") }}.
+    </div>
+    <div class="problem-fix"><span class="problem-fix-label">Fix:</span> {{ p.remediation }}</div>
+    {% if p.readiness_url %}
+    <div class="problem-links"><a href="{{ p.readiness_url }}">Open the readiness checklist &rarr;</a></div>
+    {% endif %}
+    <details>
+      <summary>Error details</summary>
+      <code>{{ p.message }}</code>
+    </details>
+  </div>
+  {% endfor %}
 </div>
 {% endif %}
